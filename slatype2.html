@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLA 평가지표 </title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8;
+      color: #1a1f2e;
+      font-size: 15px;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══ 헤더 ══ */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563a8 100%);
+      padding: 15px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .header p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      margin-top: 3px;
+    }
+
+    /* ══ 월 선택 바 ══ */
+    .month-bar {
+      position: sticky;
+      top: 62px;
+      z-index: 99;
+      background: #fff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 11px 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex-wrap: wrap;
+    }
+    .month-bar label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      white-space: nowrap;
+    }
+    .month-btn {
+      padding: 7px 18px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .month-btn:hover  { border-color: #2563a8; color: #2563a8; background: #eff6ff; }
+    .month-btn.active {
+      background: #2563a8; color: #fff;
+      border-color: #2563a8; font-weight: 700;
+      box-shadow: 0 2px 8px rgba(37,99,168,0.3);
+    }
+    .sel-info {
+      margin-left: auto;
+      font-size: 14px;
+      color: #6b7280;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-weight: 600;
+    }
+    .sel-info span { color: #2563a8; }
+
+    /* ══ 메인 콘텐츠 ══ */
+    .content {
+      flex: 1;
+      padding: 22px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* ══ 섹션 구분 헤더 ══ */
+    .sec-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .sec-tag {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 5px 16px;
+      border-radius: 20px;
+    }
+    .sec-tag.eval { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .sec-tag.mgmt { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .sec-line  { flex: 1; height: 1px; background: #e2e8f0; }
+    .sec-count { font-size: 13px; color: #9ca3af; }
+
+    /* ══ KPI 그리드 ══ */
+    .kpi-grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+    .kpi-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    /* ══ KPI 카드 ══ */
+    .kpi-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 18px 15px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .kpi-card.blue::before   { background: linear-gradient(90deg,#2563a8,#60a5fa); }
+    .kpi-card.green::before  { background: linear-gradient(90deg,#16a34a,#4ade80); }
+    .kpi-card.orange::before { background: linear-gradient(90deg,#ea6c0a,#f59e0b); }
+    .kpi-card.red::before    { background: linear-gradient(90deg,#dc2626,#f87171); }
+    .kpi-card.purple::before { background: linear-gradient(90deg,#7c3aed,#a78bfa); }
+    .kpi-card.teal::before   { background: linear-gradient(90deg,#0d9488,#34d399); }
+
+    .kpi-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      min-height: 36px;
+    }
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .kpi-card.blue   .kpi-value { color: #1d4ed8; }
+    .kpi-card.green  .kpi-value { color: #16a34a; }
+    .kpi-card.orange .kpi-value { color: #ea6c0a; }
+    .kpi-card.red    .kpi-value { color: #dc2626; }
+    .kpi-card.purple .kpi-value { color: #7c3aed; }
+    .kpi-card.teal   .kpi-value { color: #0d9488; }
+    .kpi-unit   { font-size: 13px; font-weight: 400; color: #9ca3af; margin-left: 2px; }
+    .kpi-target { font-size: 12px; color: #9ca3af; margin-bottom: 9px; }
+    .kpi-st {
+      display: inline-block;
+      padding: 3px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .st-pass { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .st-fail { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .prog-wrap { margin-top: 10px; }
+    .prog-lbl  {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .prog-bar  { height: 5px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+    .pf-blue   { background: linear-gradient(90deg,#2563a8,#60a5fa); }
+    .pf-green  { background: linear-gradient(90deg,#16a34a,#4ade80); }
+    .pf-orange { background: linear-gradient(90deg,#ea6c0a,#f59e0b); }
+    .pf-red    { background: linear-gradient(90deg,#dc2626,#f87171); }
+    .pf-purple { background: linear-gradient(90deg,#7c3aed,#a78bfa); }
+    .pf-teal   { background: linear-gradient(90deg,#0d9488,#34d399); }
+
+    /* ══ 패널 ══ */
+    .panel {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a1f2e;
+      padding-left: 10px;
+      border-left: 3px solid #2563a8;
+      margin-bottom: 6px;
+    }
+    .panel-title.green  { border-left-color: #16a34a; }
+    .panel-title.orange { border-left-color: #ea6c0a; }
+    .panel-title.purple { border-left-color: #7c3aed; }
+    .panel-sub {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 14px;
+    }
+
+    /* ══ 2열 레이아웃 ══ */
+    .row-2col { display: grid; gap: 16px; }
+    .col-6-4  { grid-template-columns: 6fr 4fr; }
+    .col-4-6  { grid-template-columns: 4fr 6fr; }
+
+    /* ══ 4열 차트 행 ══ */
+    .row-4col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* ══ 차트 래퍼 ══ */
+    .chart-wrap    { position: relative; height: 210px; }
+    .chart-wrap-lg { position: relative; height: 250px; }
+
+    /* ══ 테이블 ══ */
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #f8fafc; }
+    th {
+      padding: 10px 13px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 2px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    td {
+      padding: 11px 13px;
+      font-size: 14px;
+      color: #374151;
+      border-bottom: 1px solid #f1f5f9;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    .atag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .aq { background: #dbeafe; color: #1d4ed8; }
+    .at { background: #dcfce7; color: #15803d; }
+    .ai { background: #fef3c7; color: #b45309; }
+    .ap { background: #ede9fe; color: #6d28d9; }
+    .be { background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .bm { background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .vc { font-weight: 700; font-size: 15px; }
+    .vg { color: #16a34a; }
+    .vr { color: #dc2626; }
+    .vo { color: #ea6c0a; }
+    .vp { color: #7c3aed; }
+    .vb { color: #1d4ed8; }
+
+    /* ══ 장애 등급 ══ */
+    .inc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .inc-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 10px;
+      text-align: center;
+    }
+    .inc-grade { font-size: 13px; color: #6b7280; font-weight: 600; margin-bottom: 6px; }
+    .inc-count { font-size: 34px; font-weight: 800; line-height: 1; margin-bottom: 5px; }
+    .inc-lbl   { font-size: 12px; color: #9ca3af; }
+
+    /* ══ 구분선 ══ */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+
+    /* ══ 푸터 ══ */
+    .footer {
+      background: #1e3a5f;
+      padding: 13px 32px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ══ 반응형 ══ */
+    @media (max-width: 1200px) {
+      .kpi-grid-5 { grid-template-columns: repeat(3, 1fr); }
+      .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .row-4col   { grid-template-columns: repeat(2, 1fr); }
+      .col-6-4    { grid-template-columns: 1fr; }
+      .col-4-6    { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .content    { padding: 16px; gap: 16px; }
+      .kpi-grid-5 { grid-template-columns: repeat(2, 1fr); }
+      .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .row-4col   { grid-template-columns: 1fr; }
+      .inc-grid   { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── 헤더 — 뱃지 완전 제거 ── -->
+  <div class="header">
+    <div>
+      <h1>📊 SLA 평가지표</h1>
+      <p id="headerPeriod">기준 기간: 2026년 1월 &nbsp;|&nbsp; 월간 운영 리뷰 보고서</p>
+    </div>
+  </div>
+
+  <!-- ── 월 선택 바 (sticky) ── -->
+  <div class="month-bar">
+    <label>📅 조회 기준 월</label>
+    <button class="month-btn active" data-month="1" onclick="selMonth(this)">2026년 1월</button>
+    <button class="month-btn" data-month="2" onclick="selMonth(this)">2026년 2월</button>
+    <button class="month-btn" data-month="3" onclick="selMonth(this)">2026년 3월</button>
+    <button class="month-btn" data-month="4" onclick="selMonth(this)">2026년 4월</button>
+    <button class="month-btn" data-month="5" onclick="selMonth(this)">2026년 5월</button>
+    <button class="month-btn" data-month="6" onclick="selMonth(this)">2026년 6월</button>
+    <div class="sel-info">선택 월: <span id="selLbl">2026년 1월</span></div>
+  </div>
+
+  <!-- ── 스크롤 콘텐츠 ── -->
+  <div class="content">
+
+    <!-- ① 평가지표 KPI -->
+    <div>
+      <div class="sec-label">
+        <span class="sec-tag eval">📋 평가지표</span>
+        <div class="sec-line"></div>
+        <span class="sec-count">5개 지표</span>
+      </div>
+      <div class="kpi-grid-5">
+
+        <div class="kpi-card blue">
+          <div class="kpi-name">시스템 가동률</div>
+          <div class="kpi-value" id="kv-uptime">99.7<span class="kpi-unit">%</span></div>
+          <div class="kpi-target">목표: 99.5% 이상</div>
+          <span class="kpi-st st-pass" id="ks-uptime">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>달성률</span><span id="pl-uptime">99.7%</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-blue" id="pb-uptime" style="width:99.7%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card red">
+          <div class="kpi-name">장애 발생 건수</div>
+          <div class="kpi-value" id="kv-incident">3<span class="kpi-unit">건</span></div>
+          <div class="kpi-target">목표: 월 5건 이하</div>
+          <span class="kpi-st st-pass" id="ks-incident">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>발생</span><span id="pl-incident">3/5건</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-red" id="pb-incident" style="width:60%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card orange">
+          <div class="kpi-name">장애/오류/결함<br>CSR 발생률</div>
+          <div class="kpi-value" id="kv-csrrate">4.2<span class="kpi-unit">%</span></div>
+          <div class="kpi-target">목표: 5% 이하</div>
+          <span class="kpi-st st-pass" id="ks-csrrate">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>현재</span><span id="pl-csrrate">4.2%</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-orange" id="pb-csrrate" style="width:84%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card green">
+          <div class="kpi-name">CSR 납기준수율</div>
+          <div class="kpi-value" id="kv-csrdue">96.8<span class="kpi-unit">%</span></div>
+          <div class="kpi-target">목표: 95% 이상</div>
+          <span class="kpi-st st-pass" id="ks-csrdue">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>달성률</span><span id="pl-csrdue">96.8%</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-green" id="pb-csrdue" style="width:96.8%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-name">NW 장애시간<br>준수율</div>
+          <div class="kpi-value" id="kv-nw">18<span class="kpi-unit">분</span></div>
+          <div class="kpi-target">목표: 월 60분 이하</div>
+          <span class="kpi-st st-pass" id="ks-nw">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>사용</span><span id="pl-nw">18/60분</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-purple" id="pb-nw" style="width:30%"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ② 관리지표 KPI -->
+    <div>
+      <div class="sec-label">
+        <span class="sec-tag mgmt">🔧 관리지표</span>
+        <div class="sec-line"></div>
+        <span class="sec-count">4개 지표</span>
+      </div>
+      <div class="kpi-grid-4">
+
+        <div class="kpi-card orange">
+          <div class="kpi-name">긴급 장애 대응시간</div>
+          <div class="kpi-value" id="kv-resp">12<span class="kpi-unit">분</span></div>
+          <div class="kpi-target">목표: 15분 이내</div>
+          <span class="kpi-st st-pass" id="ks-resp">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>대응</span><span id="pl-resp">12/15분</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-orange" id="pb-resp" style="width:80%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card green">
+          <div class="kpi-name">배치 스케줄 완료율</div>
+          <div class="kpi-value" id="kv-batch">98.5<span class="kpi-unit">%</span></div>
+          <div class="kpi-target">목표: 98% 이상</div>
+          <span class="kpi-st st-pass" id="ks-batch">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>달성률</span><span id="pl-batch">98.5%</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-green" id="pb-batch" style="width:98.5%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card teal">
+          <div class="kpi-name">Backup/Restore<br>성공률</div>
+          <div class="kpi-value" id="kv-backup">100<span class="kpi-unit">%</span></div>
+          <div class="kpi-target">목표: 100%</div>
+          <span class="kpi-st st-pass" id="ks-backup">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>달성률</span><span id="pl-backup">100%</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-teal" id="pb-backup" style="width:100%"></div></div>
+          </div>
+        </div>
+
+        <div class="kpi-card blue">
+          <div class="kpi-name">CSR 만족도 조사</div>
+          <div class="kpi-value" id="kv-sat">4.3<span class="kpi-unit">/ 5.0</span></div>
+          <div class="kpi-target">목표: 4.0 이상</div>
+          <span class="kpi-st st-pass" id="ks-sat">✅ 달성</span>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>만족도</span><span id="pl-sat">86%</span></div>
+            <div class="prog-bar"><div class="prog-fill pf-blue" id="pb-sat" style="width:86%"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ③ 통합 테이블 + 레이더 -->
+    <div class="row-2col col-6-4">
+
+      <div class="panel">
+        <div class="panel-title">📋 지표 통합 현황</div>
+        <div class="panel-sub">전체 9개 지표 목표 대비 실적</div>
+        <table>
+          <thead>
+            <tr>
+              <th>구분</th><th>영역</th><th>지표명</th>
+              <th>목표</th><th>실적</th><th>상태</th>
+            </tr>
+          </thead>
+          <tbody id="tblBody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">📡 달성률 레이더</div>
+        <div class="panel-sub">목표(100) 대비 실적 비율 시각화</div>
+        <div class="chart-wrap-lg"><canvas id="radarChart"></canvas></div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ④ 추이 차트 4개 -->
+    <div>
+      <div class="panel-title green" style="margin-bottom:16px;">
+        📈 핵심 지표 월별 추이 (2026년 1 ~ 6월)
+      </div>
+      <div class="row-4col">
+
+        <div class="panel">
+          <div class="panel-title green">📡 시스템 가동률</div>
+          <div class="panel-sub">목표: 99.5% | 단위: %</div>
+          <div class="chart-wrap"><canvas id="uptimeChart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title green">📅 CSR 납기준수율</div>
+          <div class="panel-sub">목표: 95% | 단위: %</div>
+          <div class="chart-wrap"><canvas id="csrDueChart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title orange">⚡ 긴급장애 대응시간</div>
+          <div class="panel-sub">목표: 15분 이내 | 단위: 분</div>
+          <div class="chart-wrap"><canvas id="responseChart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">😊 CSR 만족도</div>
+          <div class="panel-sub">목표: 4.0 이상 | 단위: 점</div>
+          <div class="chart-wrap"><canvas id="satChart"></canvas></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ⑤ 장애 등급 + 복합 추이 -->
+    <div class="row-2col col-4-6">
+
+      <div class="panel">
+        <div class="panel-title orange">🚨 장애 발생 현황</div>
+        <div class="panel-sub">선택 월 기준 등급별 건수</div>
+        <div class="inc-grid">
+          <div class="inc-card">
+            <div class="inc-grade">🔴 1등급 Critical</div>
+            <div class="inc-count" style="color:#dc2626" id="inc1">0</div>
+            <div class="inc-lbl">서비스 전면 중단</div>
+          </div>
+          <div class="inc-card">
+            <div class="inc-grade">🟠 2등급 High</div>
+            <div class="inc-count" style="color:#ea6c0a" id="inc2">1</div>
+            <div class="inc-lbl">주요 기능 장애</div>
+          </div>
+          <div class="inc-card">
+            <div class="inc-grade">🟡 3등급 Medium</div>
+            <div class="inc-count" style="color:#ca8a04" id="inc3">2</div>
+            <div class="inc-lbl">부분 기능 장애</div>
+          </div>
+          <div class="inc-card">
+            <div class="inc-grade">🟢 4등급 Low</div>
+            <div class="inc-count" style="color:#16a34a" id="inc4">0</div>
+            <div class="inc-lbl">경미한 장애</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title purple">📉 장애건수 · NW 장애시간 추이</div>
+        <div class="panel-sub">막대: 장애건수(건) / 꺾은선: NW 장애시간(분) | 1 ~ 6월</div>
+        <div class="chart-wrap-lg"><canvas id="trendChart"></canvas></div>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- ── 푸터 ── -->
+  <div class="footer">
+    <span>📊 SLA 평가지표 &nbsp;|&nbsp; 기준: 2026년</span>
+    <span id="footerLbl">조회 기준 월: 2026년 1월</span>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+const MD = {
+  1:{ uptime:99.7, incident:3, csrrate:4.2, csrdue:96.8, nw:18,  resp:12, batch:98.5, backup:100, sat:4.3, inc:[0,1,2,0] },
+  2:{ uptime:99.6, incident:4, csrrate:4.8, csrdue:96.0, nw:22,  resp:15, batch:98.0, backup:100, sat:4.1, inc:[0,2,2,0] },
+  3:{ uptime:99.9, incident:2, csrrate:3.9, csrdue:97.1, nw:18,  resp:13, batch:98.7, backup:100, sat:4.2, inc:[0,1,1,0] },
+  4:{ uptime:99.7, incident:2, csrrate:4.2, csrdue:96.5, nw:28,  resp:14, batch:98.4, backup:100, sat:4.2, inc:[0,0,1,1] },
+  5:{ uptime:99.8, incident:1, csrrate:3.5, csrdue:97.5, nw:15,  resp:11, batch:99.0, backup:100, sat:4.4, inc:[0,0,1,0] },
+  6:{ uptime:99.5, incident:5, csrrate:4.9, csrdue:95.1, nw:55,  resp:14, batch:98.1, backup:100, sat:4.0, inc:[0,2,3,0] }
+};
+const ML = ["1월","2월","3월","4월","5월","6월"];
+let curM = 1;
+const CH = {};
+const CC = {
+  blue:"#2563a8", green:"#16a34a", orange:"#ea6c0a",
+  red:"#dc2626",  purple:"#7c3aed", teal:"#0d9488",
+  grid:"#f1f5f9", tick:"#9ca3af"
+};
+
+const baseOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { labels:{ color:"#374151", font:{size:12}, boxWidth:11, padding:9 } }
+  },
+  scales: {
+    x: { ticks:{ color:CC.tick, font:{size:12} }, grid:{ color:CC.grid } },
+    y: { ticks:{ color:CC.tick, font:{size:12} }, grid:{ color:CC.grid } }
+  }
+};
+
+function gl(v, lbl) {
+  return { type:"line", label:lbl, data:Array(6).fill(v),
+    borderColor:"#ef4444", borderDash:[5,4], borderWidth:1.5, pointRadius:0 };
+}
+
+function mkChart(id, cfg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (CH[id]) CH[id].destroy();
+  CH[id] = new Chart(el, cfg);
+}
+
+function initCharts() {
+  const g = m => MD[m];
+
+  mkChart("uptimeChart", { data:{ labels:ML, datasets:[
+    { type:"line", label:"가동률(%)", data:ML.map((_,i)=>g(i+1).uptime),
+      borderColor:CC.blue, backgroundColor:"rgba(37,99,168,0.08)",
+      fill:true, tension:0.4, pointBackgroundColor:CC.blue, borderWidth:2, pointRadius:3 },
+    gl(99.5,"목표 99.5%")
+  ]}, options:{...baseOpts, scales:{...baseOpts.scales,
+    y:{ min:99.0, max:100.1,
+        ticks:{color:CC.tick,font:{size:12},callback:v=>v+"%"},
+        grid:{color:CC.grid} }}}
+  });
+
+  mkChart("csrDueChart", { data:{ labels:ML, datasets:[
+    { type:"line", label:"납기준수율(%)", data:ML.map((_,i)=>g(i+1).csrdue),
+      borderColor:CC.green, backgroundColor:"rgba(22,163,74,0.08)",
+      fill:true, tension:0.4, pointBackgroundColor:CC.green, borderWidth:2, pointRadius:3 },
+    gl(95,"목표 95%")
+  ]}, options:{...baseOpts, scales:{...baseOpts.scales,
+    y:{ min:92, max:100,
+        ticks:{color:CC.tick,font:{size:12},callback:v=>v+"%"},
+        grid:{color:CC.grid} }}}
+  });
+
+  mkChart("responseChart", { data:{ labels:ML, datasets:[
+    { type:"line", label:"대응시간(분)", data:ML.map((_,i)=>g(i+1).resp),
+      borderColor:CC.orange, backgroundColor:"rgba(234,108,10,0.08)",
+      fill:true, tension:0.4, pointBackgroundColor:CC.orange, borderWidth:2, pointRadius:3 },
+    gl(15,"목표 15분")
+  ]}, options:{...baseOpts}
+  });
+
+  mkChart("satChart", { data:{ labels:ML, datasets:[
+    { type:"line", label:"만족도(점)", data:ML.map((_,i)=>g(i+1).sat),
+      borderColor:CC.blue, backgroundColor:"rgba(37,99,168,0.08)",
+      fill:true, tension:0.4, pointBackgroundColor:CC.blue, borderWidth:2, pointRadius:3 },
+    gl(4.0,"목표 4.0")
+  ]}, options:{...baseOpts, scales:{...baseOpts.scales,
+    y:{ min:3.5, max:5.0,
+        ticks:{color:CC.tick,font:{size:12}},
+        grid:{color:CC.grid} }}}
+  });
+
+  mkChart("trendChart", { data:{ labels:ML, datasets:[
+    { type:"bar",  label:"장애건수(건)", data:ML.map((_,i)=>g(i+1).incident),
+      backgroundColor:"rgba(234,108,10,0.55)", borderColor:CC.orange, borderWidth:1, yAxisID:"y" },
+    { type:"line", label:"NW 장애시간(분)", data:ML.map((_,i)=>g(i+1).nw),
+      borderColor:CC.purple, backgroundColor:"transparent",
+      tension:0.4, pointBackgroundColor:CC.purple, borderWidth:2, pointRadius:3, yAxisID:"y2" },
+    { type:"line", label:"NW 목표(60분)", data:Array(6).fill(60),
+      borderColor:"#ef4444", borderDash:[5,4], borderWidth:1.5, pointRadius:0, yAxisID:"y2" }
+  ]}, options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ labels:{ color:"#374151", font:{size:12}, boxWidth:11, padding:9 } } },
+    scales:{
+      x:  { ticks:{color:CC.tick,font:{size:12}}, grid:{color:CC.grid} },
+      y:  { position:"left",  ticks:{color:CC.tick,font:{size:12}}, grid:{color:CC.grid},
+            title:{display:true,text:"건",color:CC.tick,font:{size:12}} },
+      y2: { position:"right", ticks:{color:CC.tick,font:{size:12}}, grid:{display:false},
+            title:{display:true,text:"분",color:CC.tick,font:{size:12}} }
+    }
+  }});
+
+  updateRadar(curM);
+}
+
+function radarVals(m) {
+  const d = MD[m];
+  return [
+    d.uptime,
+    +Math.max(0,(1-d.incident/5)*100).toFixed(1),
+    +Math.max(0,(1-d.csrrate/5)*100).toFixed(1),
+    d.csrdue,
+    +Math.max(0,(1-d.nw/60)*100).toFixed(1),
+    +Math.max(0,(1-d.resp/15)*100).toFixed(1),
+    d.batch, d.backup,
+    +(d.sat/5*100).toFixed(1)
+  ].map(v=>Math.min(100,v));
+}
+
+function updateRadar(m) {
+  mkChart("radarChart", { type:"radar", data:{
+    labels:["가동률","장애건수","CSR결함","납기준수","NW장애","대응시간","배치완료","Backup","만족도"],
+    datasets:[
+      { label:"실적", data:radarVals(m),
+        borderColor:CC.blue, backgroundColor:"rgba(37,99,168,0.13)",
+        pointBackgroundColor:CC.blue, borderWidth:2, pointRadius:3 },
+      { label:"목표", data:Array(9).fill(100),
+        borderColor:"#ef4444", borderDash:[5,5],
+        backgroundColor:"transparent", pointBackgroundColor:"#ef4444",
+        borderWidth:1.5, pointRadius:2 }
+    ]}, options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:"#374151", font:{size:12}, boxWidth:11, padding:6 } } },
+      scales:{ r:{ min:70, max:100,
+        ticks:{ color:CC.tick, backdropColor:"transparent", font:{size:11} },
+        grid:{ color:"#e2e8f0" },
+        pointLabels:{ color:"#374151", font:{size:12} }
+      }}
+    }
+  });
+}
+
+function updateCards(m) {
+  const d = MD[m];
+  function set(id, valHtml, pct, pLbl, pass) {
+    const vEl=document.getElementById("kv-"+id),
+          sEl=document.getElementById("ks-"+id),
+          bEl=document.getElementById("pb-"+id),
+          lEl=document.getElementById("pl-"+id);
+    if(vEl) vEl.innerHTML = valHtml;
+    if(sEl){ sEl.textContent=pass?"✅ 달성":"⚠️ 미달"; sEl.className="kpi-st "+(pass?"st-pass":"st-fail"); }
+    if(bEl) bEl.style.width = Math.min(100,pct)+"%";
+    if(lEl) lEl.textContent = pLbl;
+  }
+  set("uptime",   d.uptime   +`<span class="kpi-unit">%</span>`,    d.uptime,           d.uptime+"%",      d.uptime>=99.5);
+  set("incident", d.incident +`<span class="kpi-unit">건</span>`,   (d.incident/5)*100, d.incident+"/5건", d.incident<=5);
+  set("csrrate",  d.csrrate  +`<span class="kpi-unit">%</span>`,    (d.csrrate/5)*100,  d.csrrate+"%",     d.csrrate<=5);
+  set("csrdue",   d.csrdue   +`<span class="kpi-unit">%</span>`,    d.csrdue,           d.csrdue+"%",      d.csrdue>=95);
+  set("nw",       d.nw       +`<span class="kpi-unit">분</span>`,   (d.nw/60)*100,      d.nw+"/60분",      d.nw<=60);
+  set("resp",     d.resp     +`<span class="kpi-unit">분</span>`,   (d.resp/15)*100,    d.resp+"/15분",    d.resp<=15);
+  set("batch",    d.batch    +`<span class="kpi-unit">%</span>`,    d.batch,            d.batch+"%",       d.batch>=98);
+  set("backup",   d.backup   +`<span class="kpi-unit">%</span>`,    d.backup,           d.backup+"%",      d.backup>=100);
+  const satPct = +(d.sat/5*100).toFixed(0);
+  document.getElementById("kv-sat").innerHTML = d.sat+`<span class="kpi-unit">/ 5.0</span>`;
+  document.getElementById("ks-sat").textContent = d.sat>=4?"✅ 달성":"⚠️ 미달";
+  document.getElementById("ks-sat").className   = "kpi-st "+(d.sat>=4?"st-pass":"st-fail");
+  document.getElementById("pb-sat").style.width = satPct+"%";
+  document.getElementById("pl-sat").textContent = satPct+"%";
+}
+
+function renderTable(m) {
+  const d = MD[m];
+  const rows = [
+    ["평가","Quality",     "시스템 가동률",            "99.5% 이상", d.uptime+"%",    d.uptime>=99.5,  "aq"],
+    ["평가","Quality",     "장애 발생 건수",            "5건 이하",   d.incident+"건", d.incident<=5,   "aq"],
+    ["평가","Quality",     "장애/오류/결함 CSR 발생률", "5% 이하",   d.csrrate+"%",  d.csrrate<=5,    "aq"],
+    ["평가","Timeliness",  "CSR 납기준수율",             "95% 이상",  d.csrdue+"%",   d.csrdue>=95,    "at"],
+    ["평가","Infra-NW",    "NW 장애시간 준수율",         "60분 이하", d.nw+"분",      d.nw<=60,        "ai"],
+    ["관리","Productivity","긴급 장애 대응시간",         "15분 이내", d.resp+"분",    d.resp<=15,      "ap"],
+    ["관리","Timeliness",  "배치 스케줄 완료율",         "98% 이상",  d.batch+"%",    d.batch>=98,     "at"],
+    ["관리","Infra-BackUp","Backup/Restore 성공률",     "100%",      d.backup+"%",   d.backup>=100,   "ai"],
+    ["관리","Quality",     "CSR 만족도 조사",            "4.0 이상",  d.sat+"점",     d.sat>=4.0,      "aq"],
+  ];
+  document.getElementById("tblBody").innerHTML = rows.map(([g,area,name,goal,val,pass,atag])=>`
+    <tr>
+      <td><span class="${g==="평가"?"be":"bm"}">${g}</span></td>
+      <td><span class="atag ${atag}">${area}</span></td>
+      <td>${name}</td>
+      <td style="color:#9ca3af;">${goal}</td>
+      <td class="vc ${pass?"vg":"vr"}">${val}</td>
+      <td><span class="kpi-st ${pass?"st-pass":"st-fail"}">${pass?"✅ 달성":"⚠️ 미달"}</span></td>
+    </tr>`).join("");
+}
+
+function updateInc(m) {
+  const inc = MD[m].inc;
+  [1,2,3,4].forEach(i=>{
+    const el=document.getElementById("inc"+i);
+    if(el) el.textContent=inc[i-1];
+  });
+}
+
+function selMonth(btn) {
+  document.querySelectorAll(".month-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  curM = parseInt(btn.dataset.month);
+  const lbl = "2026년 "+curM+"월";
+  document.getElementById("selLbl").textContent       = lbl;
+  document.getElementById("headerPeriod").textContent = "기준 기간: "+lbl+" | 월간 운영 리뷰 보고서";
+  document.getElementById("footerLbl").textContent    = "조회 기준 월: "+lbl;
+  updateCards(curM);
+  renderTable(curM);
+  updateInc(curM);
+  updateRadar(curM);
+}
+
+window.addEventListener("load", ()=>{
+  initCharts();
+  updateCards(curM);
+  renderTable(curM);
+  updateInc(curM);
+});
+</script>
+</body>
+</html>

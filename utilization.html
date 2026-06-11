@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>시스템 사용현황 대시보드</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8; color: #1a1f2e; font-size: 14px;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563a8 100%);
+      padding: 14px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-left h1 { font-size: 20px; font-weight: 700; color: #fff; }
+    .header-left p  { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 3px; }
+    .header-right   { font-size: 12px; color: rgba(255,255,255,0.6); text-align: right; }
+
+    /* ── Main layout ── */
+    .main { padding: 20px 28px 40px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── Section title ── */
+    .sec-title {
+      font-size: 15px; font-weight: 700; color: #1e3a5f;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+      padding-left: 10px;
+      border-left: 4px solid #2563a8;
+    }
+
+    /* ── Chart grid ── */
+    .chart-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .chart-card {
+      background: #fff; border-radius: 12px; padding: 16px 18px;
+      border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .chart-card .c-title {
+      font-size: 12px; font-weight: 700; color: #374151;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    }
+    .chart-card .c-title .cdot {
+      width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0;
+    }
+    .chart-wrap    { position: relative; width: 100%; height: 200px; }
+    .chart-wrap-md { position: relative; width: 100%; height: 240px; }
+
+    /* 도넛 카드 내부 */
+    .donut-inner { display: flex; align-items: center; gap: 14px; height: 200px; }
+    .donut-canvas-wrap { position: relative; width: 170px; height: 170px; flex-shrink: 0; }
+    .donut-legends { display: flex; flex-direction: column; gap: 7px; flex: 1; }
+    .leg-item  { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+    .leg-color { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .leg-name  { flex: 1; color: #374151; }
+    .leg-val   { font-weight: 700; color: #1e3a5f; }
+    .leg-pct   { color: #6b7280; font-size: 10px; }
+
+    /* ── 통계 카드 ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    .stat-card {
+      background: #fff; border-radius: 12px; padding: 20px 16px;
+      border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .stat-card .s-label { font-size: 12px; color: #6b7280; margin-bottom: 8px; font-weight: 500; }
+    .stat-card .s-value { font-size: 30px; font-weight: 800; }
+    .stat-card .s-unit  { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+    .s-blue { color: #2563a8; }
+    .s-red  { color: #dc2626; }
+    .s-dark { color: #1e3a5f; }
+
+    /* ── 테이블 카드 ── */
+    .table-card {
+      background: #fff; border-radius: 12px; padding: 20px;
+      border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .table-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; gap: 12px; flex-wrap: wrap;
+    }
+    .search-wrap  { display: flex; align-items: center; gap: 8px; }
+    .search-label { font-size: 13px; color: #374151; font-weight: 600; }
+    .search-input {
+      padding: 7px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: 13px; width: 200px; outline: none; color: #374151; background: #f8fafc;
+    }
+    .search-input:focus { border-color: #2563a8; background: #fff; }
+    .tbl-info { font-size: 12px; color: #6b7280; }
+
+    /* 테이블 */
+    .tbl-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 960px; }
+    thead th {
+      background: #1e3a5f; color: #fff; font-weight: 600;
+      padding: 10px 8px; text-align: center; white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,0.15);
+    }
+    thead th:last-child { border-right: none; }
+    thead .th-sub { background: #2563a8; font-size: 11px; }
+    tbody td {
+      padding: 8px 8px; text-align: center;
+      border-bottom: 1px solid #f1f5f9; color: #374151; white-space: nowrap;
+    }
+    tbody td.td-name { text-align: left; font-weight: 600; color: #1e3a5f; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* 증감 */
+    .up   { color: #dc2626; font-weight: 600; }
+    .down { color: #2563a8; font-weight: 600; }
+    .same { color: #9ca3af; }
+    .arrow-up   { color: #dc2626; }
+    .arrow-down { color: #2563a8; }
+
+    /* 페이지네이션 */
+    .pagination {
+      display: flex; justify-content: center; align-items: center;
+      gap: 5px; margin-top: 16px;
+    }
+    .pg-btn {
+      padding: 5px 11px; border: 1.5px solid #e2e8f0; border-radius: 6px;
+      background: #fff; font-size: 12px; cursor: pointer; color: #374151; transition: all 0.15s;
+    }
+    .pg-btn:hover  { border-color: #2563a8; color: #2563a8; background: #eff6ff; }
+    .pg-btn.active { background: #2563a8; color: #fff; border-color: #2563a8; font-weight: 700; }
+    .pg-btn:disabled { opacity: 0.35; cursor: default; }
+    .pg-arrow { font-size: 14px; }
+
+    /* ── Footer ── */
+    .footer {
+      background: #1e3a5f; padding: 14px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: rgba(255,255,255,0.6);
+    }
+    .footer-logo { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: 1px; }
+    .footer-logo span { color: #60a5fa; }
+
+    @media (max-width: 1100px) {
+      .chart-grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid   { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .chart-grid-3, .stats-grid { grid-template-columns: 1fr; }
+      .main { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="header-left">
+    <h1>📊 시스템 사용현황 대시보드</h1>
+    <p>IT Ops Portal &nbsp;|&nbsp; 단위업무: 월별 시스템 사용현황 조회</p>
+  </div>
+  <div class="header-right">
+    <div>메뉴명: 시스템 사용현황</div>
+    <div>작성일: 2026-06-09</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── 차트 ROW 1 ── -->
+  <div>
+
+    <div class="chart-grid-3">
+
+      <div class="chart-card">
+        <div class="c-title"><span class="cdot" style="background:#2563a8"></span>시스템 활성화율 구성</div>
+        <div class="donut-inner">
+          <div class="donut-canvas-wrap"><canvas id="donutChart"></canvas></div>
+          <div class="donut-legends" id="donutLegend"></div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="c-title"><span class="cdot" style="background:#22c55e"></span>시스템별 활성 사용자 수 (상위 20개)</div>
+        <div class="chart-wrap-md"><canvas id="top20Chart"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="c-title"><span class="cdot" style="background:#f59e0b"></span>시스템별 활성 사용자 수 (하위 20개)</div>
+        <div class="chart-wrap-md"><canvas id="bot20Chart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 차트 ROW 2 ── -->
+  <div>
+
+    <div class="chart-grid-3">
+
+      <div class="chart-card">
+        <div class="c-title"><span class="cdot" style="background:#8b5cf6"></span>월별 활성 사용자 수 vs 전월 비교 (상위 10개)</div>
+        <div class="chart-wrap-md"><canvas id="monthCompChart"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="c-title"><span class="cdot" style="background:#0ea5e9"></span>시스템 활성화변비율 (상위 20개)</div>
+        <div class="chart-wrap-md"><canvas id="actRateChart"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="c-title"><span class="cdot" style="background:#ef4444"></span>시스템 활성화변비율 (하위 20개)</div>
+        <div class="chart-wrap-md"><canvas id="changeRateChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 통계 요약 ── -->
+  <div>
+    <div class="sec-title">통계 요약</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="s-label">총 시스템 수</div>
+        <div class="s-value s-dark">80</div>
+        <div class="s-unit">개</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">최대 월간 활성 사용자 수</div>
+        <div class="s-value s-blue">6,497</div>
+        <div class="s-unit">명</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">평균 시스템 활성일 수</div>
+        <div class="s-value s-dark">27</div>
+        <div class="s-unit">일</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">평균 활성화면 비율</div>
+        <div class="s-value s-blue">66</div>
+        <div class="s-unit">%</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">미사용 시스템</div>
+        <div class="s-value s-red">4</div>
+        <div class="s-unit">개</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 상세 데이터 테이블 ── -->
+  <div class="table-card">
+    <div class="sec-title">시스템 상세 데이터</div>
+    <div class="table-toolbar" style="justify-content: flex-end; gap: 16px;">
+  <div class="search-wrap">
+    <input class="search-input" type="text" id="searchInput" placeholder="시스템명 검색..." oninput="filterTable()"/>
+  </div>
+</div>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" style="min-width:130px;">시스템명</th>
+            <th rowspan="2">누적속건수</th>
+            <th rowspan="2">활성사용자수<br/>(MAU)</th>
+            <th rowspan="2">활성일수</th>
+            <th rowspan="2">활성화연수</th>
+            <th rowspan="2">순화연수</th>
+            <th rowspan="2">활성화변비율</th>
+            <th rowspan="2">최대DAU</th>
+            <th rowspan="2">시스템점유율</th>
+            <th colspan="3" style="background:#1a5276;">전월 비교</th>
+            <th rowspan="2">6개월<br/>평균MAU</th>
+          </tr>
+          <tr>
+            <th class="th-sub">전월MAU</th>
+            <th class="th-sub">전월대비율</th>
+            <th class="th-sub">전월대비접속수</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    
+     <div class="tbl-info" id="tblInfo">전체 <strong>0</strong>개</div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+</div>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  <div class="footer-logo"><span>GS</span> E&amp;C</div>
+  <div>투명한 신뢰와 끊임없는 혁신으로 더 안전하고 행복한 삶의 미래를 완성합니다.</div>
+  <div>IT Ops Portal &nbsp;|&nbsp; 최종 업데이트: 2026-06-09</div>
+</div>
+
+<script>
+/* ── 데이터 ── */
+const ALL_DATA = [
+  { name:"GTP-AS Manager",  cum:1339,   mau:16,  days:26, actRate:66.7,  purRate:26, seq:39,  maxDau:10,  share:"+0.0%", prevMau:22,   prevRate:"-27.3%", prevDiff:-35.6, avg6m:18,   trend:-1 },
+  { name:"포탈 B2B 포탈",   cum:8847,   mau:135, days:30, actRate:50.0,  purRate:4,  seq:8,   maxDau:281, share:"+0.9%", prevMau:1526, prevRate:"-11.3%", prevDiff:-23.2, avg6m:1468, trend:-1 },
+  { name:"GS-BAS",          cum:13778,  mau:250, days:30, actRate:68.2,  purRate:75, seq:110, maxDau:100, share:"+0.4%", prevMau:286,  prevRate:"-12.6%", prevDiff:-11.1, avg6m:269,  trend:-1 },
+  { name:"BMS",             cum:1157,   mau:119, days:24, actRate:18.9,  purRate:17, seq:90,  maxDau:28,  share:"+0.1%", prevMau:104,  prevRate:"+14.4%", prevDiff:+11.9, avg6m:117,  trend:1  },
+  { name:"영업관리",         cum:5480,   mau:54,  days:29, actRate:48.0,  purRate:84, seq:175, maxDau:18,  share:"+0.1%", prevMau:60,   prevRate:"-10.0%", prevDiff:-5.0,  avg6m:51,   trend:-1 },
+  { name:"CS 비품관리",      cum:32455,  mau:157, days:30, actRate:67.9,  purRate:55, seq:81,  maxDau:84,  share:"+0.3%", prevMau:153,  prevRate:"+2.6%",  prevDiff:-16.3, avg6m:150,  trend:1  },
+  { name:"협력사/재료관리",  cum:762,    mau:61,  days:10, actRate:100.0, purRate:5,  seq:5,   maxDau:16,  share:"+0.0%", prevMau:null, prevRate:"-",      prevDiff:null,  avg6m:61,   trend:0  },
+  { name:"B2B 기타구매",     cum:21594,  mau:354, days:27, actRate:100.0, purRate:29, seq:23,  maxDau:79,  share:"+0.2%", prevMau:419,  prevRate:"-14.7%", prevDiff:-8.1,  avg6m:374,  trend:-1 },
+  { name:"전자 니티",        cum:137804, mau:520, days:3,  actRate:100.0, purRate:42, seq:42,  maxDau:457, share:"+0.1%", prevMau:null, prevRate:"-",      prevDiff:null,  avg6m:520,  trend:1  },
+  { name:"HR셀프서비스",     cum:9820,   mau:210, days:30, actRate:90.0,  purRate:62, seq:120, maxDau:88,  share:"+0.5%", prevMau:190,  prevRate:"+10.5%", prevDiff:+12.3, avg6m:198,  trend:1  },
+  { name:"원가관리시스템",    cum:7650,   mau:185, days:28, actRate:85.0,  purRate:42, seq:95,  maxDau:72,  share:"+0.4%", prevMau:175,  prevRate:"+5.7%",  prevDiff:+8.2,  avg6m:180,  trend:1  },
+  { name:"안전관리시스템",    cum:4320,   mau:142, days:29, actRate:82.0,  purRate:38, seq:78,  maxDau:65,  share:"+0.3%", prevMau:138,  prevRate:"+2.9%",  prevDiff:+3.5,  avg6m:140,  trend:1  },
+  { name:"문서관리시스템",    cum:11200,  mau:98,  days:27, actRate:70.0,  purRate:22, seq:55,  maxDau:45,  share:"+0.2%", prevMau:105,  prevRate:"-6.7%",  prevDiff:-4.8,  avg6m:101,  trend:-1 },
+  { name:"ERP재무모듈",      cum:6890,   mau:320, days:30, actRate:93.0,  purRate:88, seq:190, maxDau:132, share:"+0.7%", prevMau:310,  prevRate:"+3.2%",  prevDiff:+5.8,  avg6m:315,  trend:1  },
+  { name:"협력사포털",       cum:8140,   mau:178, days:29, actRate:80.0,  purRate:48, seq:92,  maxDau:76,  share:"+0.4%", prevMau:165,  prevRate:"+7.9%",  prevDiff:+9.1,  avg6m:172,  trend:1  },
+  { name:"품질관리포털",     cum:3560,   mau:88,  days:26, actRate:72.0,  purRate:28, seq:60,  maxDau:38,  share:"+0.2%", prevMau:92,   prevRate:"-4.3%",  prevDiff:-2.8,  avg6m:90,   trend:-1 },
+  { name:"설비관리CMMS",     cum:2180,   mau:55,  days:22, actRate:62.0,  purRate:15, seq:42,  maxDau:25,  share:"+0.1%", prevMau:60,   prevRate:"-8.3%",  prevDiff:-3.2,  avg6m:57,   trend:-1 },
+  { name:"공정관리시스템",    cum:5670,   mau:125, days:27, actRate:75.0,  purRate:35, seq:70,  maxDau:54,  share:"+0.3%", prevMau:118,  prevRate:"+5.9%",  prevDiff:+4.6,  avg6m:122,  trend:1  },
+  { name:"교육훈련시스템",    cum:1450,   mau:42,  days:18, actRate:45.0,  purRate:10, seq:28,  maxDau:20,  share:"+0.1%", prevMau:48,   prevRate:"-12.5%", prevDiff:-4.2,  avg6m:45,   trend:-1 },
+  { name:"사내메신저",       cum:42000,  mau:520, days:30, actRate:97.0,  purRate:95, seq:210, maxDau:480, share:"+1.1%", prevMau:510,  prevRate:"+2.0%",  prevDiff:+8.5,  avg6m:505,  trend:1  },
+];
+
+const PALETTE = [
+  "#2563a8","#22c55e","#f59e0b","#ef4444","#8b5cf6",
+  "#0ea5e9","#14b8a6","#f97316","#ec4899","#84cc16",
+  "#6366f1","#06b6d4","#a3e635","#fb923c","#e879f9",
+  "#34d399","#fbbf24","#60a5fa","#f472b6","#4ade80"
+];
+
+Chart.defaults.font.family = "'Segoe UI', Roboto, sans-serif";
+Chart.defaults.color = "#6b7280";
+
+/* ── ① 도넛 ── */
+const DONUT_LABELS = ["우수(80%+)","양호(60~79%)","보통(40~59%)","미흡(40%미만)","미사용(0%)"];
+const DONUT_DATA   = [28, 22, 16, 10, 4];
+const DONUT_COLORS = ["#22c55e","#3b82f6","#f59e0b","#ef4444","#9ca3af"];
+const DONUT_TOTAL  = DONUT_DATA.reduce((a,b)=>a+b,0);
+
+new Chart(document.getElementById("donutChart"), {
+  type: "doughnut",
+  data: {
+    labels: DONUT_LABELS,
+    datasets: [{ data: DONUT_DATA, backgroundColor: DONUT_COLORS, borderWidth: 3, borderColor: "#fff" }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: "62%",
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}개 (${Math.round(ctx.raw/DONUT_TOTAL*100)}%)` } }
+    }
+  }
+});
+
+const legendEl = document.getElementById("donutLegend");
+DONUT_LABELS.forEach((lbl, i) => {
+  legendEl.innerHTML += `
+    <div class="leg-item">
+      <div class="leg-color" style="background:${DONUT_COLORS[i]}"></div>
+      <div class="leg-name">${lbl}</div>
+      <div class="leg-val">${DONUT_DATA[i]}개</div>
+      <div class="leg-pct">${Math.round(DONUT_DATA[i]/DONUT_TOTAL*100)}%</div>
+    </div>`;
+});
+
+/* ── ② TOP 20 MAU ── */
+const top20 = [...ALL_DATA].sort((a,b) => b.mau - a.mau);
+new Chart(document.getElementById("top20Chart"), {
+  type: "bar",
+  data: {
+    labels: top20.map(d => d.name),
+    datasets: [{ label:"MAU", data: top20.map(d => d.mau), backgroundColor: top20.map((_,i)=>PALETTE[i%PALETTE.length]), borderRadius:4 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid:{ display:false }, ticks:{ font:{size:10}, maxRotation:45 } },
+      y: { grid:{ color:"#f1f5f9" }, ticks:{ font:{size:11} } }
+    }
+  }
+});
+
+/* ── ③ BOTTOM 20 MAU ── */
+const bot20 = [...ALL_DATA].sort((a,b) => a.mau - b.mau);
+new Chart(document.getElementById("bot20Chart"), {
+  type: "bar",
+  data: {
+    labels: bot20.map(d => d.name),
+    datasets: [{ label:"MAU", data: bot20.map(d => d.mau), backgroundColor: bot20.map((_,i)=>PALETTE[i%PALETTE.length]), borderRadius:4 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid:{ display:false }, ticks:{ font:{size:10}, maxRotation:45 } },
+      y: { grid:{ color:"#f1f5f9" }, ticks:{ font:{size:11} } }
+    }
+  }
+});
+
+/* ── ④ 월별 MAU vs 전월 비교 ── */
+const top10 = [...ALL_DATA].sort((a,b) => b.mau - a.mau).slice(0, 10);
+new Chart(document.getElementById("monthCompChart"), {
+  type: "bar",
+  data: {
+    labels: top10.map(d => d.name),
+    datasets: [
+      { type:"bar",  label:"당월 MAU", data: top10.map(d=>d.mau),          backgroundColor:"#2563a8", borderRadius:4 },
+      { type:"line", label:"전월 MAU", data: top10.map(d=>d.prevMau||0),   borderColor:"#f59e0b", backgroundColor:"rgba(245,158,11,0.15)", borderWidth:2.5, pointRadius:4, fill:false, tension:0.3 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position:"bottom", labels:{ font:{size:11}, boxWidth:12 } } },
+    scales: {
+      x: { grid:{ display:false }, ticks:{ font:{size:10}, maxRotation:40 } },
+      y: { grid:{ color:"#f1f5f9" }, ticks:{ font:{size:11} } }
+    }
+  }
+});
+
+/* ── ⑤ 활성화율 TOP 20 ── */
+const actTop = [...ALL_DATA].sort((a,b) => b.actRate - a.actRate);
+new Chart(document.getElementById("actRateChart"), {
+  type: "bar",
+  data: {
+    labels: actTop.map(d => d.name),
+    datasets: [{
+      label:"활성화율(%)",
+      data: actTop.map(d => d.actRate),
+      backgroundColor: actTop.map(d => d.actRate>=80?"#22c55e":d.actRate>=60?"#3b82f6":d.actRate>=40?"#f59e0b":"#ef4444"),
+      borderRadius:4
+    }]
+  },
+  options: {
+    indexAxis:"y",
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{ display:false } },
+    scales: {
+      x: { max:110, grid:{ color:"#f1f5f9" }, ticks:{ callback:v=>v+"%", font:{size:11} } },
+      y: { grid:{ display:false }, ticks:{ font:{size:10} } }
+    }
+  }
+});
+
+/* ── ⑥ 변화율 하위 20개 ── */
+const changeData = ALL_DATA.filter(d=>d.prevDiff!==null).sort((a,b)=>a.prevDiff-b.prevDiff).slice(0,20);
+new Chart(document.getElementById("changeRateChart"), {
+  type: "bar",
+  data: {
+    labels: changeData.map(d => d.name),
+    datasets: [{
+      label:"전월대비접속수",
+      data: changeData.map(d => d.prevDiff),
+      backgroundColor: changeData.map(d => d.prevDiff>=0?"#22c55e":"#ef4444"),
+      borderRadius:4
+    }]
+  },
+  options: {
+    indexAxis:"y",
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{ display:false } },
+    scales: {
+      x: { grid:{ color:"#f1f5f9" }, ticks:{ callback:v=>v+"%", font:{size:11} } },
+      y: { grid:{ display:false }, ticks:{ font:{size:10} } }
+    }
+  }
+});
+
+/* ── ⑧ 테이블 ── */
+let filteredData = [...ALL_DATA];
+let curPage = 1;
+const PAGE_SZ = 9;
+
+function trendArrow(t) {
+  if (t > 0)  return `<span class="arrow-up">▲</span>`;
+  if (t < 0)  return `<span class="arrow-down">▼</span>`;
+  return `<span class="same">━</span>`;
+}
+function rateClass(v) {
+  if (!v || v === "-") return "same";
+  return v.startsWith("+") ? "up" : "down";
+}
+
+function renderTable() {
+  const tbody = document.getElementById("tableBody");
+  const start = (curPage - 1) * PAGE_SZ;
+  const rows  = filteredData.slice(start, start + PAGE_SZ);
+  tbody.innerHTML = rows.map(d => `
+    <tr>
+      <td class="td-name">${d.name}</td>
+      <td>${d.cum.toLocaleString()}</td>
+      <td><strong>${d.mau.toLocaleString()}</strong></td>
+      <td>${d.days}</td>
+      <td>${d.actRate.toFixed(1)}%</td>
+      <td>${d.purRate}</td>
+      <td>${d.seq}</td>
+      <td>${d.maxDau.toLocaleString()}</td>
+      <td><span class="${rateClass(d.share)}">${d.share}</span></td>
+      <td>${d.prevMau !== null ? d.prevMau.toLocaleString() : "-"}</td>
+      <td><span class="${rateClass(d.prevRate)}">${d.prevRate}</span> ${d.prevMau !== null ? trendArrow(d.trend) : ""}</td>
+      <td>${d.prevDiff !== null ? (d.prevDiff > 0 ? "+" : "") + d.prevDiff.toFixed(1) + "%" : "-"}</td>
+      <td><strong>${d.avg6m.toLocaleString()}</strong></td>
+    </tr>
+  `).join("");
+
+  document.getElementById("tblInfo").innerHTML =
+    `전체 <strong>${filteredData.length}</strong>개 &nbsp;|&nbsp; ${start+1}~${Math.min(start+PAGE_SZ, filteredData.length)} 표시`;
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filteredData.length / PAGE_SZ);
+  const pg = document.getElementById("pagination");
+  pg.innerHTML = "";
+
+  const addBtn = (txt, page, cls="") => {
+    const b = document.createElement("button");
+    b.className = "pg-btn" + (cls ? " " + cls : "");
+    b.innerHTML = txt;
+    b.onclick = () => { curPage = page; renderTable(); };
+    if (page < 1 || page > total) b.disabled = true;
+    pg.appendChild(b);
+  };
+
+  addBtn('<span class="pg-arrow">&#8249;</span>', curPage - 1);
+  for (let i = 1; i <= total; i++) addBtn(i, i, i === curPage ? "active" : "");
+  addBtn('<span class="pg-arrow">&#8250;</span>', curPage + 1);
+}
+
+function filterTable() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  filteredData = ALL_DATA.filter(d => d.name.toLowerCase().includes(q));
+  curPage = 1;
+  renderTable();
+}
+
+renderTable();
+</script>
+</body>
+</html>
