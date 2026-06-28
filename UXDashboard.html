@@ -95,7 +95,6 @@
     /* ── 테이블 ── */
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
 
-    /* ▶ 컬럼 헤드 : 흰색 배경 */
     thead th {
       background: #ffffff;
       color: #1e3a5f;
@@ -112,7 +111,6 @@
     thead th:last-child { border-right: none; }
     thead th:hover { background: #f0f4f8; }
 
-    /* 정렬 아이콘 */
     thead th .sort-icon {
       display: inline-block; margin-left: 5px;
       font-size: 11px; color: #9ca3af; vertical-align: middle;
@@ -170,6 +168,173 @@
       .kpi-grid, .chart-grid-3, .chart-grid-2 { grid-template-columns: 1fr; }
       .main { padding: 16px; }
     }
+
+    /* ══════════════════════════════════════
+       UX 진단 결과 팝업 모달 (신규 추가)
+    ══════════════════════════════════════ */
+    .ux-modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+    }
+    .ux-modal-overlay.open { display: flex; }
+
+    .ux-modal {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 92%;
+      max-width: 1000px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .ux-modal-header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563a8 100%);
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .ux-modal-header h2 {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .ux-modal-header p {
+      color: rgba(255,255,255,0.75);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+    .ux-modal-close {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .ux-modal-close:hover { background: rgba(255,255,255,0.30); }
+
+    .ux-modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .ux-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .ux-sum-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .ux-sum-card .s-lbl { font-size: 11px; color: #6b7280; margin-bottom: 6px; font-weight: 500; }
+    .ux-sum-card .s-val { font-size: 22px; font-weight: 800; color: #1e3a5f; }
+    .ux-sum-card .s-sub { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+    .ux-diag-table-wrap { overflow-x: auto; }
+    .ux-diag-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 760px;
+    }
+    .ux-diag-table thead th {
+      background: #1e3a5f;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 9px 10px;
+      text-align: center;
+      white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,0.12);
+      cursor: default;
+    }
+    .ux-diag-table thead th:last-child { border-right: none; }
+    .ux-diag-table thead th .sort-icon { display: none; }
+    .ux-diag-table tbody td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      text-align: center;
+      color: #374151;
+      white-space: nowrap;
+    }
+    .ux-diag-table tbody td.td-left-ux { text-align: left; white-space: normal; }
+    .ux-diag-table tbody tr:hover { background: #f0f4ff; }
+    .ux-diag-table tbody tr:last-child td { border-bottom: none; }
+
+    .score-bar-wrap { display: flex; align-items: center; gap: 7px; }
+    .score-bar {
+      flex: 1; height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden;
+    }
+    .score-bar-fill { height: 100%; border-radius: 4px; }
+    .score-num { font-size: 12px; font-weight: 700; color: #1e3a5f; min-width: 30px; text-align: right; }
+
+    .weak-chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #fef3c7;
+      color: #92400e;
+      white-space: nowrap;
+    }
+    .improve-chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #dbeafe;
+      color: #1e40af;
+      margin: 2px 2px 2px 0;
+      white-space: nowrap;
+    }
+
+    .ux-modal-footer {
+      padding: 12px 24px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+    .ux-close-btn {
+      padding: 8px 24px;
+      background: #1e3a5f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ux-close-btn:hover { background: #2563a8; }
+
+    /* 더블클릭 가능 셀 힌트 */
+    .dbl-click-hint {
+      cursor: pointer;
+      text-decoration: underline dotted #2563a8;
+      color: #1e3a5f;
+    }
+    .dbl-click-hint:hover { color: #2563a8; }
   </style>
 </head>
 <body>
@@ -247,6 +412,8 @@
   <!-- ── 상세 테이블 ── -->
   <div class="table-card">
     <div class="sec-title">시스템별 UX 개선 상세 내역</div>
+    <div style="font-size:11px; color:#6b7280; margin-bottom:10px;">
+    </div>
     <div class="table-toolbar">
       <span class="tbl-info" id="tbl-info">전체 0건</span>
       <select class="filter-select" id="filterGrade" onchange="filterTable()">
@@ -285,6 +452,46 @@
 
 </div>
 
+<!-- ══════════════════════════════════════
+     UX 진단 결과 팝업 모달 (신규 추가)
+══════════════════════════════════════ -->
+<div class="ux-modal-overlay" id="uxModalOverlay" onclick="closeUXModalOutside(event)">
+  <div class="ux-modal" id="uxModal">
+    <div class="ux-modal-header">
+      <div>
+        <h2 id="uxModalTitle">시스템 UX 진단 결과</h2>
+        <p id="uxModalSub">화면별 취약 항목 및 개선사항</p>
+      </div>
+      <button class="ux-modal-close" onclick="closeUXModal()">✕</button>
+    </div>
+    <div class="ux-modal-body">
+      <div class="ux-summary-grid" id="uxSummaryGrid"></div>
+      <div class="ux-diag-table-wrap">
+        <table class="ux-diag-table">
+          <thead>
+            <tr>
+              <th style="width:36px;">순번</th>
+              <th style="min-width:160px;">화면명</th>
+              <th style="width:80px;">종합점수</th>
+              <th style="min-width:110px;">취약항목 1</th>
+              <th style="width:72px;">점수</th>
+              <th style="min-width:110px;">취약항목 2</th>
+              <th style="width:72px;">점수</th>
+              <th style="min-width:110px;">취약항목 3</th>
+              <th style="width:72px;">점수</th>
+              <th style="min-width:170px; text-align:left;">개선사항 1</th>
+              <th style="min-width:170px; text-align:left;">개선사항 2</th>
+            </tr>
+          </thead>
+          <tbody id="uxDiagBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ux-modal-footer">
+      <button class="ux-close-btn" onclick="closeUXModal()">닫기</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ═══════════════════════════════════════
@@ -294,8 +501,8 @@ const RAW = [
   { sys:"HR시스템(통합인사시스템)", person:"정정훈, 지강혁", grade:"A", screen:"입사자관리",            due:"6.24", apply:"O", detail:"기본정보 입력 여부에 따라 동적 Tab Control",                         note:"" },
   { sys:"HR시스템(통합인사시스템)", person:"정정훈, 지강혁", grade:"A", screen:"이동근무신청",           due:"6.25", apply:"O", detail:"작성자 기본 정보 입력 시 디폴트값 설정",                             note:"" },
   { sys:"HR시스템(통합인사시스템)", person:"정정훈, 지강혁", grade:"A", screen:"시간외근로정산 신청",    due:"6.29", apply:"O", detail:"불필요한 가로 스크롤 제거",                                          note:"" },
-  { sys:"(신)전자전표",             person:"김준식, 박현정",  grade:"A", screen:"출장비 정산",            due:"6.25", apply:"X", detail:"오류 메시지 수정, 파일 업로드 제한 안내, 필수 입력 표시",            note:"개발완료, 06.29 배포 예정" },
-  { sys:"(신)전자전표",             person:"김준식, 박현정",  grade:"A", screen:"법인카드 사용경비 처리", due:"6.29", apply:"-", detail:"",                                                                   note:"" },
+  { sys:"전자전표",             person:"김준식, 박현정",  grade:"A", screen:"출장비 정산",            due:"6.25", apply:"X", detail:"오류 메시지 수정, 파일 업로드 제한 안내, 필수 입력 표시",            note:"개발완료, 06.29 배포 예정" },
+  { sys:"전자전표",             person:"김준식, 박현정",  grade:"A", screen:"법인카드 사용경비 처리", due:"6.29", apply:"-", detail:"",                                                                   note:"" },
   { sys:"[공용] 플랜트구매",        person:"채유순",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"[문서] gWorks",            person:"조대호",          grade:"B", screen:"VP Report",               due:"6.29", apply:"-", detail:"",                                                                   note:"" },
   { sys:"[배관] GTP-AS Manager",    person:"조대호",          grade:"C", screen:"Generate/ Check in/Out",  due:"7.16", apply:"-", detail:"",                                                                   note:"" },
@@ -322,10 +529,10 @@ const RAW = [
   { sys:"gWorks-V",                  person:"조대호",          grade:"-", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"HelpDesk",                  person:"이정남",          grade:"D", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"ITSM(CSR 처리)",            person:"이재찬",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
-  { sys:"Man Hour(MHS시스템)",       person:"김길상",          grade:"B", screen:"MH결재선 관리",           due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"Man Hour(MHS시스템)",       person:"김길상",          grade:"B", screen:"공지사항리스트",          due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"My Work",                   person:"지강혁",          grade:"B", screen:"To-Do 해야 할 업무",      due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"My Work",                   person:"지강혁",          grade:"B", screen:"Task Manager 요청 Task",  due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"Man Hour(MHS시스템)",       person:"김길상",          grade:"B", screen:"MH결재선 관리",           due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"Man Hour(MHS시스템)",       person:"김길상",          grade:"B", screen:"공지사항리스트",          due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"My Work",                   person:"지강혁",          grade:"B", screen:"To-Do 해야 할 업무",      due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"My Work",                   person:"지강혁",          grade:"B", screen:"Task Manager 요청 Task",  due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"NextGAS",                   person:"김철영",          grade:"B", screen:"법인카드등록",            due:"7.3",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"NextGAS",                   person:"김철영",          grade:"B", screen:"예금계좌등록",            due:"7.3",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"Position Profile",          person:"김길상",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"추후 GP(Growth Profile)시스템으로 대체 예정(07.15)" },
@@ -343,11 +550,11 @@ const RAW = [
   { sys:"근무시간관리",              person:"정재우",          grade:"C", screen:"근무시간관리(월)",        due:"7.1",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"근무시간관리",              person:"정재우",          grade:"C", screen:"근무시간관리(주)",        due:"7.1",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"녹색정보",                  person:"오은혜",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
-  { sys:"리더십진단",                person:"김길상",          grade:"C", screen:"리더십 역량진단",         due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"리더십진단",                person:"김길상",          grade:"C", screen:"리더십 역량진단",         due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"법무관리",                  person:"이상경",          grade:"B", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
-  { sys:"분양관리",                  person:"권정남",          grade:"B", screen:"별도품목정보(구)",        due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"분양관리",                  person:"권정남",          grade:"B", screen:"동/호수편성",             due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"성과관리(EMS)",             person:"김길상",          grade:"B", screen:"중간점검",                due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"분양관리",                  person:"권정남",          grade:"B", screen:"별도품목정보(구)",        due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"분양관리",                  person:"권정남",          grade:"B", screen:"동/호수편성",             due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"성과관리(EMS)",             person:"김길상",          grade:"B", screen:"중간점검",                due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"성과관리(EMS)",             person:"김길상",          grade:"B", screen:"중간점검(평가자)",        due:"6.24", apply:"O", detail:"사용자 안내 메시지 명확화",                                        note:"" },
   { sys:"영업관리",                  person:"지가연",          grade:"C", screen:"프로젝트 등록",           due:"7.15", apply:"-", detail:"",                                                                   note:"" },
   { sys:"영업관리",                  person:"지가연",          grade:"C", screen:"고객 등록",               due:"7.15", apply:"-", detail:"",                                                                   note:"" },
@@ -357,17 +564,17 @@ const RAW = [
   { sys:"옵션공사관리",              person:"이윤선",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"우리사주",                  person:"정재우",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"자이렌오더",                person:"윤태승",          grade:"D", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"주요 과제 완료 후 진행(11월 이후)" },
-  { sys:"전자결재",                  person:"이정남",          grade:"A", screen:"BM발령 요청서",           due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"전자결재",                  person:"이정남",          grade:"A", screen:"하도급 계약 품의",        due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"전자결재",                  person:"이정남",          grade:"A", screen:"BM발령 요청서",           due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"전자결재",                  person:"이정남",          grade:"A", screen:"하도급 계약 품의",        due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"조달 B2B 포털",             person:"유영진",          grade:"C", screen:"팝업/알림",               due:"7.3",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"조달 B2B 포털",             person:"유영진",          grade:"C", screen:"오류메시지",              due:"7.3",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"주택사업비",                person:"권정남",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"지식재산(IPS)",             person:"이상경",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"커뮤니티",                  person:"하원용",          grade:"C", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"토건구매",                  person:"채유순",          grade:"A", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
-  { sys:"통합견적",                  person:"지가연",          grade:"B", screen:"기준 단가 관리",          due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"통합견적",                  person:"지가연",          grade:"B", screen:"WBS Mapping",             due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
-  { sys:"통합인물정보",              person:"김길상",          grade:"C", screen:"권한관리",                due:"6.3",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"통합견적",                  person:"지가연",          grade:"B", screen:"기준 단가 관리",          due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"통합견적",                  person:"지가연",          grade:"B", screen:"WBS Mapping",             due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
+  { sys:"통합인물정보",              person:"김길상",          grade:"C", screen:"권한관리",                due:"6.30",  apply:"-", detail:"",                                                                   note:"" },
   { sys:"퇴직자홈페이지",            person:"이정남",          grade:"D", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"협력사TPMS(eWorks)",        person:"조대호",          grade:"D", screen:"-",                      due:"-",    apply:"-", detail:"",                                                                   note:"" },
   { sys:"SAP",                       person:"이민욱, 한상원",  grade:"A", screen:"부동산 임대 현황",        due:"7.15", apply:"-", detail:"",                                                                   note:"" },
@@ -473,21 +680,16 @@ new Chart(document.getElementById("gradeScreenChart"), {
 /* ═══════════════════════════════════════
    테이블 + 정렬
 ═══════════════════════════════════════ */
-/* 등급 순서: A→B→C→D→기타 */
 const GRADE_ORDER = { A:1, B:2, C:3, D:4, "-":5 };
 
 let filteredData = [];
 let curPage    = 1;
 const PAGE_SZ  = 15;
 
-/* 정렬 상태: 기본값 = grade 오름차순 */
 let sortCol = "grade";
-let sortDir = "asc";   /* "asc" | "desc" */
+let sortDir = "asc";
 
-/* 등급 비교값 */
 function gradeVal(g) { return GRADE_ORDER[g] ?? 5; }
-
-/* 날짜 비교값 (월.일 → 숫자) */
 function dueVal(d) {
   if (!d || d === "-") return 9999;
   const parts = d.split(".");
@@ -511,7 +713,6 @@ function sortData(data) {
   });
 }
 
-/* 헤더 아이콘 업데이트 */
 function updateHeaders() {
   document.querySelectorAll("#mainTable thead th").forEach(th => {
     th.classList.remove("sort-asc", "sort-desc");
@@ -525,7 +726,6 @@ function updateHeaders() {
   });
 }
 
-/* 헤더 클릭 이벤트 */
 document.querySelectorAll("#mainTable thead th").forEach(th => {
   th.addEventListener("click", () => {
     const col = th.dataset.col;
@@ -557,7 +757,11 @@ function renderTable() {
 
   document.getElementById("tableBody").innerHTML = rows.map(r => `
     <tr>
-      <td class="td-left" style="font-weight:600;color:#1e3a5f;">${r.sys}</td>
+      <td class="td-left">
+        <span class="dbl-click-hint" ondblclick="showUXPopup('${r.sys.replace(/'/g,"\\'")}')">
+          ${r.sys}
+        </span>
+      </td>
       <td>${r.person}</td>
       <td><span class="badge ${gradeClass(r.grade)}">${r.grade}</span></td>
       <td class="td-left">${r.screen && r.screen!=="-" ? r.screen : `<span style="color:#d1d5db">-</span>`}</td>
@@ -605,10 +809,465 @@ function filterTable() {
   renderTable();
 }
 
-/* 초기 실행: 기본 정렬 grade 오름차순 */
 filteredData = [...RAW];
 updateHeaders();
 renderTable();
+
+/* ═══════════════════════════════════════
+   UX 진단 결과 데이터 (엑셀 기반, 신규 추가)
+═══════════════════════════════════════ */
+const UX_DATA = [
+  { sys:"B2B 검사",       scr:"Inspaction Status",          score:4.38, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.17, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"B2B 검사",       scr:"IDR",                         score:4.40, w1:"상태/진행 정보", s1:3.17, w2:"오류 메시지",    s2:3.25, w3:"중복 입력",      s3:4.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"B2B 검사",       scr:"NCR",                         score:4.48, w1:"상태/진행 정보", s1:3.00, w2:"처리/응답속도",  s2:3.75, w3:"중복 입력",      s3:4.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"B2B 검사",       scr:"Billing Summary-Detail",      score:4.48, w1:"상태/진행 정보", s1:3.33, w2:"오류 메시지",    s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"B2B_기타구매",   scr:"전자입찰 목록",               score:4.34, w1:"입력 작업",      s1:3.50, w2:"중복 입력",      s2:3.50, w3:"처리/응답속도",  s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"B2B_기타구매",   scr:"입찰목록(협력사)",            score:4.36, w1:"화면 가독성",    s1:3.67, w2:"입력 작업",      s2:4.00, w3:"중복 입력",      s3:4.00, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"필수/선택 입력 구분 명확화" },
+  { sys:"B2B_기타구매",   scr:"전자입찰 상세",               score:4.48, w1:"중복 입력",      s1:3.88, w2:"화면 가독성",    s2:4.00, w3:"스크롤",        s3:4.00, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"B2B_기타구매",   scr:"전자계약",                    score:4.48, w1:"중복 입력",      s1:3.88, w2:"화면 가독성",    s2:4.00, w3:"스크롤",        s3:4.00, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"B2B_포탈",       scr:"공동발주사 전자서명",         score:4.29, w1:"팝업/알림",      s1:3.00, w2:"중복 입력",      s2:3.75, w3:"처리/응답속도",  s3:4.00, i1:"불필요한 팝업 축소",                      i2:"반복 입력 항목 제거" },
+  { sys:"B2B_포탈",       scr:"증명발급확인",                score:4.47, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:3.75, w3:"작업 처리",      s3:3.83, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"B2B_포탈",       scr:"기성실적 증명확인",           score:4.48, w1:"오류 메시지",    s1:3.00, w2:"작업 처리",      s2:3.67, w3:"중복 입력",      s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"저장/승인/전송 완료 기준 명확화" },
+  { sys:"B2B_포탈",       scr:"구매 제안 견적",              score:4.50, w1:"중복 입력",      s1:3.25, w2:"처리/응답속도",  s2:4.00, w3:"입력 작업",      s3:4.25, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"B2B국내외주",    scr:"견적제출",                    score:4.29, w1:"입력 작업",      s1:1.00, w2:"처리/응답속도",  s2:3.00, w3:"화면 가독성",    s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"B2B국내외주",    scr:"기성실적증명",                score:4.36, w1:"입력 작업",      s1:3.00, w2:"중복 입력",      s2:3.00, w3:"화면 가독성",    s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"B2B국내외주",    scr:"수주정보",                    score:4.43, w1:"중복 입력",      s1:3.00, w2:"입력 작업",      s2:3.25, w3:"처리/응답속도",  s3:3.25, i1:"반복 입력 항목 제거",                     i2:"필수/선택 입력 구분 명확화" },
+  { sys:"B2B국내외주",    scr:"양식함",                      score:4.45, w1:"중복 입력",      s1:3.12, w2:"입력 작업",      s2:3.25, w3:"처리/응답속도",  s3:3.25, i1:"반복 입력 항목 제거",                     i2:"필수/선택 입력 구분 명확화" },
+  { sys:"B2B토건구매",    scr:"견적실",                      score:4.29, w1:"스크롤",        s1:3.83, w2:"중복 입력",      s2:3.88, w3:"작업 처리",      s3:4.00, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"B2B토건구매",    scr:"입찰실",                      score:4.31, w1:"스크롤",        s1:3.33, w2:"중복 입력",      s2:3.75, w3:"입력 작업",      s3:4.00, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"B2B토건구매",    scr:"현장설명회",                  score:4.38, w1:"상태/진행 정보", s1:3.67, w2:"중복 입력",      s2:3.75, w3:"처리/응답속도",  s3:4.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"반복 입력 항목 제거" },
+  { sys:"B2B토건구매",    scr:"기성실적(하도대보증)",        score:4.47, w1:"중복 입력",      s1:3.62, w2:"상태/진행 정보", s2:3.83, w3:"처리/응답속도",  s3:4.50, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"B2B플랜트구매",  scr:"JobMail",                     score:3.95, w1:"상태/진행 정보", s1:3.17, w2:"스크롤",        s2:3.33, w3:"중복 입력",      s3:3.38, i1:"처리 단계 및 완료 여부 시각화",          i2:"주요 액션 첫 화면 배치" },
+  { sys:"B2B플랜트구매",  scr:"ServiceVendor",               score:3.95, w1:"중복 입력",      s1:3.00, w2:"스크롤",        s2:3.50, w3:"상태/진행 정보", s3:3.67, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"B2B플랜트구매",  scr:"Project",                     score:3.98, w1:"중복 입력",      s1:3.25, w2:"스크롤",        s2:3.33, w3:"처리/응답속도",  s3:3.75, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"B2B플랜트구매",  scr:"TimeSheetManage",             score:4.02, w1:"중복 입력",      s1:3.38, w2:"화면 가독성",    s2:3.50, w3:"스크롤",        s3:3.67, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"B2B해외외주",    scr:"Package Set-up",              score:4.26, w1:"입력 작업",      s1:3.00, w2:"중복 입력",      s2:3.00, w3:"상태/진행 정보", s3:3.67, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"B2B해외외주",    scr:"Intention",                   score:4.29, w1:"상태/진행 정보", s1:3.17, w2:"입력 작업",      s2:3.50, w3:"작업 처리",      s3:3.67, i1:"처리 단계 및 완료 여부 시각화",          i2:"필수/선택 입력 구분 명확화" },
+  { sys:"B2B해외외주",    scr:"Project Information",         score:4.47, w1:"중복 입력",      s1:3.00, w2:"입력 작업",      s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"반복 입력 항목 제거",                     i2:"필수/선택 입력 구분 명확화" },
+  { sys:"B2B해외외주",    scr:"General Notice",              score:4.48, w1:"중복 입력",      s1:3.00, w2:"입력 작업",      s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"반복 입력 항목 제거",                     i2:"필수/선택 입력 구분 명확화" },
+  { sys:"BMS",            scr:"국내-프로젝트-일반직",        score:3.41, w1:"팝업/알림",      s1:1.50, w2:"입력 작업",      s2:2.50, w3:"상태/진행 정보", s3:2.67, i1:"불필요한 팝업 축소",                      i2:"필수/선택 입력 구분 명확화" },
+  { sys:"BMS",            scr:"국내-프로젝트-스트레스지수측정",score:4.29,w1:"오류 메시지",   s1:3.00, w2:"상태/진행 정보", s2:3.00, w3:"작업 처리",      s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"BMS",            scr:"국내-프로젝트-고철",          score:4.43, w1:"스크롤",        s1:3.83, w2:"상태/진행 정보", s2:3.83, w3:"작업 처리",      s3:4.17, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"BMS",            scr:"국내-프로젝트-월보고",        score:4.45, w1:"스크롤",        s1:3.17, w2:"입력 작업",      s2:4.00, w3:"중복 입력",      s3:4.12, i1:"주요 액션 첫 화면 배치",                  i2:"필수/선택 입력 구분 명확화" },
+  { sys:"CMNT",           scr:"게시물 등록",                 score:4.53, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:4.00, w3:"입력 작업",      s3:4.25, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"CMNT",           scr:"게시물 수정",                 score:4.53, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:4.00, w3:"입력 작업",      s3:4.25, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"CSMS",           scr:"(AS관리)AS접수관리",          score:3.93, w1:"입력 작업",      s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"상태/진행 정보", s3:3.17, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"CSMS",           scr:"(PQC관리)주택인도현황",       score:4.22, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"입력 작업",      s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"CSMS",           scr:"(AS관리)작업관리",            score:4.22, w1:"오류 메시지",    s1:3.00, w2:"입력 작업",      s2:3.50, w3:"중복 입력",      s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"필수/선택 입력 구분 명확화" },
+  { sys:"CSMS",           scr:"(AS관리)작업결과등록",        score:4.24, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:3.62, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"CSMS협력사포탈", scr:"작업목록조회",                score:4.21, w1:"중복 입력",      s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"상태/진행 정보", s3:3.33, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"CSMS협력사포탈", scr:"문의게시판 등록",             score:4.28, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.33, w3:"중복 입력",      s3:3.38, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"CSMS협력사포탈", scr:"공용부점검관리",              score:4.29, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.33, w3:"중복 입력",      s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"CSMS협력사포탈", scr:"엔트리상세정보",              score:4.36, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.33, w3:"중복 입력",      s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"CS비용관리",     scr:"보험금 청구현황",             score:4.22, w1:"처리/응답속도",  s1:2.00, w2:"중복 입력",      s2:3.38, w3:"팝업/알림",      s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"CS비용관리",     scr:"집행품의",                    score:4.26, w1:"처리/응답속도",  s1:2.25, w2:"중복 입력",      s2:3.50, w3:"상태/진행 정보", s3:4.17, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"CS비용관리",     scr:"공동도급",                    score:4.26, w1:"처리/응답속도",  s1:2.00, w2:"중복 입력",      s2:3.62, w3:"상태/진행 정보", s3:4.17, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"CS비용관리",     scr:"공지사항목록",                score:4.28, w1:"처리/응답속도",  s1:2.00, w2:"중복 입력",      s2:3.38, w3:"오류 메시지",    s3:4.25, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"EICS",           scr:"Register Information",        score:4.29, w1:"스크롤",        s1:3.00, w2:"처리/응답속도",  s2:3.50, w3:"오류 메시지",    s3:3.50, i1:"주요 액션 첫 화면 배치",                  i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"EICS",           scr:"Manage Information",          score:4.29, w1:"스크롤",        s1:3.00, w2:"처리/응답속도",  s2:3.50, w3:"오류 메시지",    s3:3.50, i1:"주요 액션 첫 화면 배치",                  i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"EICS",           scr:"Information Status",          score:4.29, w1:"스크롤",        s1:3.00, w2:"처리/응답속도",  s2:3.50, w3:"오류 메시지",    s3:3.50, i1:"주요 액션 첫 화면 배치",                  i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"EICS",           scr:"Information Master List",     score:4.31, w1:"스크롤",        s1:3.17, w2:"처리/응답속도",  s2:3.50, w3:"오류 메시지",    s3:3.50, i1:"주요 액션 첫 화면 배치",                  i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"EP",             scr:"회의실 예약 등록",            score:4.19, w1:"화면 가독성",    s1:1.83, w2:"오류 메시지",    s2:2.50, w3:"처리/응답속도",  s3:4.00, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"EP",             scr:"회의실 예약 수정",            score:4.19, w1:"화면 가독성",    s1:1.83, w2:"오류 메시지",    s2:2.50, w3:"처리/응답속도",  s3:4.00, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"EP",             scr:"위젯용 대표 프로젝트 설정",   score:4.34, w1:"입력 작업",      s1:2.50, w2:"상태/진행 정보", s2:3.67, w3:"중복 입력",      s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"EP",             scr:"일정 수정",                   score:4.34, w1:"오류 메시지",    s1:2.75, w2:"입력 작업",      s2:3.75, w3:"스크롤",        s3:3.83, i1:"원인·조치 중심 메시지 표준화",           i2:"필수/선택 입력 구분 명확화" },
+  { sys:"EWORKS",         scr:"문서관리",                    score:4.45, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.67, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"EWORKS",         scr:"개인정보 수정",               score:4.45, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.67, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"EWORKS",         scr:"FJR 리스트 조회",             score:4.48, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"EWORKS",         scr:"사용자 등록",                 score:4.52, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.67, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"G-Asset",        scr:"배송지정보 관리",             score:4.05, w1:"스크롤",        s1:3.00, w2:"팝업/알림",      s2:3.00, w3:"데이터 정확성",  s3:3.67, i1:"주요 액션 첫 화면 배치",                  i2:"불필요한 팝업 축소" },
+  { sys:"G-Asset",        scr:"소모품신청",                  score:4.07, w1:"팝업/알림",      s1:3.00, w2:"스크롤",        s2:3.17, w3:"데이터 정확성",  s3:3.67, i1:"불필요한 팝업 축소",                      i2:"주요 액션 첫 화면 배치" },
+  { sys:"G-Asset",        scr:"입고등록",                    score:4.19, w1:"중복 입력",      s1:3.12, w2:"데이터 정확성",  s2:3.67, w3:"팝업/알림",      s3:3.75, i1:"반복 입력 항목 제거",                     i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"G-Asset",        scr:"자산조회",                    score:4.22, w1:"스크롤",        s1:3.17, w2:"데이터 정확성",  s2:3.67, w3:"중복 입력",      s3:3.88, i1:"주요 액션 첫 화면 배치",                  i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"G-Service",      scr:"근무복",                      score:3.98, w1:"입력 작업",      s1:3.00, w2:"팝업/알림",      s2:3.25, w3:"처리/응답속도",  s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"불필요한 팝업 축소" },
+  { sys:"G-Service",      scr:"스포츠티켓(축구)",            score:4.02, w1:"중복 입력",      s1:3.25, w2:"팝업/알림",      s2:3.25, w3:"처리/응답속도",  s3:3.50, i1:"반복 입력 항목 제거",                     i2:"불필요한 팝업 축소" },
+  { sys:"G-Service",      scr:"파우치",                      score:4.02, w1:"중복 입력",      s1:3.25, w2:"팝업/알림",      s2:3.25, w3:"처리/응답속도",  s3:3.50, i1:"반복 입력 항목 제거",                     i2:"불필요한 팝업 축소" },
+  { sys:"G-Service",      scr:"사내전화 신청",               score:4.02, w1:"중복 입력",      s1:3.25, w2:"팝업/알림",      s2:3.25, w3:"처리/응답속도",  s3:3.50, i1:"반복 입력 항목 제거",                     i2:"불필요한 팝업 축소" },
+  { sys:"GMPS",           scr:"4.지급관리",                  score:4.66, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.00, w3:"화면 가독성",    s3:4.67, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"GMPS",           scr:"5.직종별급여",                score:4.66, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.00, w3:"화면 가독성",    s3:4.50, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"GMPS",           scr:"9. 근태입력",                 score:4.66, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.00, w3:"화면 가독성",    s3:4.67, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"GMPS",           scr:"10. 근태확인",                score:4.66, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.00, w3:"화면 가독성",    s3:4.50, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"gsurvey",        scr:"4.대상자 선정발송",           score:4.79, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.67, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"gsurvey",        scr:"5.설문결과",                  score:4.79, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.50, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"gsurvey",        scr:"1.설문지 등록수정",           score:4.81, w1:"중복 입력",      s1:4.12, w2:"화면 가독성",    s2:4.67, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"gsurvey",        scr:"2.설문 일정관리",             score:4.81, w1:"중복 입력",      s1:4.12, w2:"화면 가독성",    s2:4.67, w3:"스크롤",        s3:4.83, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"GT-CBL",         scr:"Electrical Cable Schedule",  score:4.24, w1:"처리/응답속도",  s1:2.25, w2:"스크롤",        s2:3.33, w3:"오류 메시지",    s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-CBL",         scr:"Instrument Cable Schedule",  score:4.24, w1:"처리/응답속도",  s1:2.25, w2:"스크롤",        s2:3.33, w3:"오류 메시지",    s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-CBL",         scr:"Input Cable Pulling Work",   score:4.24, w1:"처리/응답속도",  s1:2.25, w2:"스크롤",        s2:3.33, w3:"오류 메시지",    s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-CBL",         scr:"Cable Drum Schedule",        score:4.26, w1:"처리/응답속도",  s1:2.50, w2:"스크롤",        s2:3.33, w3:"오류 메시지",    s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-Estimation",  scr:"Bill of Material (Piping)",  score:4.10, w1:"상태/진행 정보", s1:3.17, w2:"처리/응답속도",  s2:3.25, w3:"오류 메시지",    s3:3.25, i1:"처리 단계 및 완료 여부 시각화",          i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GT-Estimation",  scr:"BQ and Cost Break Down",     score:4.24, w1:"스크롤",        s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"오류 메시지",    s3:3.75, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-Estimation",  scr:"Subcon",                     score:4.31, w1:"스크롤",        s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"오류 메시지",    s3:3.75, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-Estimation",  scr:"Subcontracting Plan",        score:4.31, w1:"스크롤",        s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"오류 메시지",    s3:3.75, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-IPCS",        scr:"Project Information",        score:3.95, w1:"화면 가독성",    s1:2.33, w2:"입력 작업",      s2:3.00, w3:"중복 입력",      s3:3.00, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"필수/선택 입력 구분 명확화" },
+  { sys:"GT-IPCS",        scr:"Work Framming Chart",        score:4.03, w1:"입력 작업",      s1:2.00, w2:"처리/응답속도",  s2:2.00, w3:"스크롤",        s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GT-IPCS",        scr:"Schedule Refresh",           score:4.14, w1:"작업 처리",      s1:2.33, w2:"중복 입력",      s2:3.50, w3:"상태/진행 정보", s3:3.67, i1:"저장/승인/전송 완료 기준 명확화",        i2:"반복 입력 항목 제거" },
+  { sys:"GT-IPCS",        scr:"Project Overall Status",     score:4.19, w1:"입력 작업",      s1:2.50, w2:"중복 입력",      s2:2.50, w3:"화면 가독성",    s3:3.67, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"GT-MaCON",       scr:"B.10.03 Supplier",          score:4.19, w1:"스크롤",        s1:2.83, w2:"상태/진행 정보", s2:2.83, w3:"처리/응답속도",  s3:3.25, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-MaCON",       scr:"C.50.04 Electrical",        score:4.21, w1:"상태/진행 정보", s1:2.83, w2:"스크롤",        s2:3.00, w3:"처리/응답속도",  s3:3.25, i1:"처리 단계 및 완료 여부 시각화",          i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-MaCON",       scr:"B.10.04 PO",                score:4.22, w1:"상태/진행 정보", s1:2.83, w2:"스크롤",        s2:3.17, w3:"처리/응답속도",  s3:3.25, i1:"처리 단계 및 완료 여부 시각화",          i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-MaCON",       scr:"C.50.02 Material Issue",    score:4.22, w1:"상태/진행 정보", s1:2.83, w2:"스크롤",        s2:3.17, w3:"처리/응답속도",  s3:3.25, i1:"처리 단계 및 완료 여부 시각화",          i2:"주요 액션 첫 화면 배치" },
+  { sys:"GT-MADEX",       scr:"Setup-Directory",            score:4.38, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"입력 작업",      s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-MADEX",       scr:"Report-Pkg. SubOrder",      score:4.40, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"처리/응답속도",  s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-MADEX",       scr:"Setup-Pkg. Suborder",       score:4.41, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"입력 작업",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-MADEX",       scr:"Info-Project",               score:4.41, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"입력 작업",      s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GT-MaIn",        scr:"PO Setting",                 score:4.60, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"GT-MaIn",        scr:"IDR",                        score:4.60, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"GT-MaIn",        scr:"Invoice",                    score:4.60, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"GT-MaIn",        scr:"Invoice Summary",            score:4.60, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"GT-RSC",         scr:"1. Steel Structure",         score:4.29, w1:"중복 입력",      s1:3.38, w2:"오류 메시지",    s2:3.50, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GT-RSC",         scr:"2. Mechanical",              score:4.29, w1:"중복 입력",      s1:3.38, w2:"오류 메시지",    s2:3.50, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GT-RSC",         scr:"3. Piping",                  score:4.29, w1:"중복 입력",      s1:3.38, w2:"오류 메시지",    s2:3.50, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GT-RSC",         scr:"4. Tank",                    score:4.29, w1:"중복 입력",      s1:3.38, w2:"오류 메시지",    s2:3.50, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTE-MADENG",     scr:"Input BQ",                   score:4.38, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTE-MADENG",     scr:"Electrical Load Q'ty",       score:4.40, w1:"처리/응답속도",  s1:3.50, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTE-MADENG",     scr:"Engineering BOM",            score:4.47, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTE-MADENG",     scr:"BM Sheet",                   score:4.47, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTE-MAX",        scr:"Input Data for Cable",       score:4.34, w1:"처리/응답속도",  s1:3.50, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTE-MAX",        scr:"View Revision Data",         score:4.36, w1:"처리/응답속도",  s1:2.25, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTE-MAX",        scr:"Cable Schedule",             score:4.38, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTE-MAX",        scr:"Load Summary(Bus Base)",     score:4.38, w1:"처리/응답속도",  s1:3.25, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTF-MADENG",     scr:"E-BOM",                      score:4.40, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"입력 작업",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTF-MADENG",     scr:"M-BOM",                      score:4.40, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"입력 작업",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTF-MADENG",     scr:"Document",                   score:4.41, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"처리/응답속도",  s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTF-MADENG",     scr:"E-BOM_BQ",                   score:4.43, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTH-MADENG",     scr:"Document",                   score:4.40, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"화면 가독성",    s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTH-MADENG",     scr:"Publish Requisition",        score:4.53, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTH-MADENG",     scr:"E-BOM (HVAC)",               score:4.53, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTH-MADENG",     scr:"E-BOM (Power)",              score:4.53, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTI-MaDENG",     scr:"Input BQ",                   score:3.74, w1:"입력 작업",      s1:2.50, w2:"스크롤",        s2:2.67, w3:"상태/진행 정보", s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"주요 액션 첫 화면 배치" },
+  { sys:"GTI-MaDENG",     scr:"Input Qty(Bulk System)",     score:3.84, w1:"처리/응답속도",  s1:2.50, w2:"스크롤",        s2:2.67, w3:"상태/진행 정보", s3:3.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"주요 액션 첫 화면 배치" },
+  { sys:"GTI-MaDENG",     scr:"Requisition 등록",           score:3.88, w1:"스크롤",        s1:2.67, w2:"입력 작업",      s2:3.00, w3:"상태/진행 정보", s3:3.00, i1:"주요 액션 첫 화면 배치",                  i2:"필수/선택 입력 구분 명확화" },
+  { sys:"GTI-MaDENG",     scr:"Select BM VP",               score:3.90, w1:"스크롤",        s1:2.67, w2:"상태/진행 정보", s2:3.00, w3:"입력 작업",      s3:3.50, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTM-MADENG",     scr:"TAG-Main item",              score:4.24, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.25, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTM-MADENG",     scr:"NOZZLE-NOZZLE INFO",         score:4.29, w1:"오류 메시지",    s1:3.25, w2:"상태/진행 정보", s2:3.50, w3:"화면 가독성",    s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTM-MADENG",     scr:"TAG-Sub Item",               score:4.34, w1:"오류 메시지",    s1:3.25, w2:"처리/응답속도",  s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GTM-MADENG",     scr:"TAG-Equipment Group",        score:4.36, w1:"오류 메시지",    s1:3.25, w2:"상태/진행 정보", s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTM-Package",    scr:"BM Input",                   score:4.36, w1:"스크롤",        s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"오류 메시지",    s3:3.75, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTM-StdDwg",     scr:"Edit Drawing",               score:4.36, w1:"스크롤",        s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"오류 메시지",    s3:3.75, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-AS MANAGER", scr:"Generate_ Check In_Out",     score:4.21, w1:"상태/진행 정보", s1:2.83, w2:"오류 메시지",    s2:3.00, w3:"화면 가독성",    s3:3.67, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTP-AS MANAGER", scr:"Reply Request",              score:4.24, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.00, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-AS MANAGER", scr:"Trouble Management",         score:4.28, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.00, w3:"입력 작업",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-AS MANAGER", scr:"View Iso Status",            score:4.29, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.00, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-IC",         scr:"Company Set Up",             score:4.36, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.25, w3:"상태/진행 정보", s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GTP-IC",         scr:"Project Information",        score:4.38, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GTP-IC",         scr:"Input Iso Dwg. List",        score:4.38, w1:"처리/응답속도",  s1:2.25, w2:"오류 메시지",    s2:3.00, w3:"상태/진행 정보", s3:3.67, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTP-IC",         scr:"Import Transmittal",         score:4.38, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-JC",         scr:"J.20.30 Check Undetermined", score:4.05, w1:"처리/응답속도",  s1:3.00, w2:"스크롤",        s2:3.00, w3:"오류 메시지",    s3:3.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"주요 액션 첫 화면 배치" },
+  { sys:"GTP-JC",         scr:"N.30.01 Visual Inspection",  score:4.10, w1:"스크롤",        s1:1.67, w2:"오류 메시지",    s2:2.75, w3:"입력 작업",      s3:3.50, i1:"주요 액션 첫 화면 배치",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTP-JC",         scr:"J.20.02 Spool Information",  score:4.14, w1:"입력 작업",      s1:3.00, w2:"스크롤",        s2:3.00, w3:"오류 메시지",    s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"주요 액션 첫 화면 배치" },
+  { sys:"GTP-JC",         scr:"J.20.10 Modified Joint",     score:4.16, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"스크롤",        s3:3.33, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTP-MaCON",      scr:"C.41.05 Confirm MIR",       score:4.21, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.17, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-MaCON",      scr:"C.41.01 Non-Iso BM",        score:4.22, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.00, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-MaCON",      scr:"C.40.05 Confirm MIR",       score:4.24, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.33, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-MaCON",      scr:"C.40.07 Revise MIR",        score:4.24, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.33, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-MaDENG",     scr:"GT.2 Manual Input",          score:3.79, w1:"입력 작업",      s1:2.25, w2:"스크롤",        s2:2.50, w3:"처리/응답속도",  s3:3.25, i1:"필수/선택 입력 구분 명확화",              i2:"주요 액션 첫 화면 배치" },
+  { sys:"GTP-MaDENG",     scr:"GM.1.3 Geometric",           score:3.88, w1:"스크롤",        s1:2.83, w2:"입력 작업",      s2:3.00, w3:"처리/응답속도",  s3:3.25, i1:"주요 액션 첫 화면 배치",                  i2:"필수/선택 입력 구분 명확화" },
+  { sys:"GTP-MaDENG",     scr:"GQ.5.1 Define & Calculate",  score:3.90, w1:"입력 작업",      s1:2.75, w2:"중복 입력",      s2:3.00, w3:"스크롤",        s3:3.17, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"GTP-MaDENG",     scr:"GQ.6.1 FWBS for Manual",    score:3.90, w1:"입력 작업",      s1:1.50, w2:"중복 입력",      s2:3.00, w3:"스크롤",        s3:3.17, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"GTP-ST",         scr:"Spool Master List",          score:4.34, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"상태/진행 정보", s3:3.67, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTP-ST",         scr:"Spool Detail Status",        score:4.34, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.25, w3:"상태/진행 정보", s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GTP-ST",         scr:"Set Up Subcon. Config",      score:4.38, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-ST",         scr:"Spool Barcode",              score:4.40, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.67, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTP-WF",         scr:"Run Shop Workfront",         score:4.31, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.25, w3:"상태/진행 정보", s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GTP-WF",         scr:"Create Field Work Package",  score:4.33, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GTP-WF",         scr:"Drawing BM&Joint",           score:4.34, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTP-WF",         scr:"Issued Work Volume",         score:4.36, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.50, w3:"처리/응답속도",  s3:3.75, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTR-C",          scr:"Steam Table",                score:4.43, w1:"처리/응답속도",  s1:3.25, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTR-C",          scr:"Fire Case",                  score:4.48, w1:"처리/응답속도",  s1:3.25, w2:"오류 메시지",    s2:3.50, w3:"상태/진행 정보", s3:3.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTR-C",          scr:"Pipe Data",                  score:4.48, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTR-C",          scr:"Breather Valve",             score:4.48, w1:"오류 메시지",    s1:3.50, w2:"상태/진행 정보", s2:3.50, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"GTS-S",          scr:"Planning",                   score:3.88, w1:"처리/응답속도",  s1:1.75, w2:"오류 메시지",    s2:2.00, w3:"스크롤",        s3:3.33, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"GTS-S",          scr:"View BM",                    score:3.90, w1:"오류 메시지",    s1:1.00, w2:"중복 입력",      s2:2.75, w3:"입력 작업",      s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"GTS-S",          scr:"Input Inspection Result",    score:4.21, w1:"상태/진행 정보", s1:3.33, w2:"입력 작업",      s2:3.50, w3:"스크롤",        s3:3.67, i1:"처리 단계 및 완료 여부 시각화",          i2:"필수/선택 입력 구분 명확화" },
+  { sys:"GTS-S",          scr:"Loose Part",                 score:4.26, w1:"처리/응답속도",  s1:2.00, w2:"중복 입력",      s2:3.12, w3:"스크롤",        s3:3.67, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"GWORKS",         scr:"Vp Report",                  score:4.45, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.75, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GWORKS",         scr:"Document Control Report",    score:4.48, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.75, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GWORKS",         scr:"Download Full List",         score:4.50, w1:"오류 메시지",    s1:3.00, w2:"처리/응답속도",  s2:3.75, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"GWORKS",         scr:"VP Summary",                 score:4.52, w1:"오류 메시지",    s1:3.50, w2:"화면 가독성",    s2:3.67, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"GWORKS-V",       scr:"Transmittals (To GS E&C 1)", score:4.41, w1:"처리/응답속도",  s1:3.25, w2:"입력 작업",      s2:4.00, w3:"중복 입력",      s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"필수/선택 입력 구분 명확화" },
+  { sys:"GWORKS-V",       scr:"Transmittals (To GS E&C 2)", score:4.62, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.17, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"GWORKS-V",       scr:"Transmittals (From GS E&C)", score:4.62, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.17, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"GWORKS-V",       scr:"User Manual",                score:4.62, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.17, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"GWORKSMAIL",     scr:"CCS MailList",               score:4.52, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.83, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"HR",             scr:"15.입사자관리",              score:4.03, w1:"입력 작업",      s1:2.25, w2:"오류 메시지",    s2:2.75, w3:"화면 가독성",    s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"HR",             scr:"61.시간외근로 정산 관리",    score:4.09, w1:"화면 가독성",    s1:2.33, w2:"오류 메시지",    s2:3.00, w3:"처리/응답속도",  s3:3.50, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"HR",             scr:"42.발령품의(PJT일반직)",     score:4.16, w1:"입력 작업",      s1:2.50, w2:"오류 메시지",    s2:3.00, w3:"처리/응답속도",  s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"HR",             scr:"20.조직정보관리",            score:4.17, w1:"입력 작업",      s1:2.75, w2:"오류 메시지",    s2:3.00, w3:"처리/응답속도",  s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"HRMS",           scr:"조직품의",                   score:4.74, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"HRMS",           scr:"Project MH 실적조회",        score:4.74, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"HRMS",           scr:"MH가동률 Monitoring",        score:4.74, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"HRMS",           scr:"Project별 MH가동률",         score:4.74, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.50, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"IES",            scr:"Education matrix info",      score:3.84, w1:"입력 작업",      s1:1.50, w2:"상태/진행 정보", s2:2.50, w3:"오류 메시지",    s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"IES",            scr:"Document Information",       score:4.19, w1:"스크롤",        s1:2.67, w2:"상태/진행 정보", s2:2.67, w3:"오류 메시지",    s3:3.00, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"IES",            scr:"Vendor Url Add",             score:4.40, w1:"오류 메시지",    s1:2.50, w2:"상태/진행 정보", s2:3.33, w3:"처리/응답속도",  s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"IES",            scr:"Upload File",                score:4.55, w1:"입력 작업",      s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"중복 입력",      s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"ITSM",           scr:"XISND Pending CSR 조회",     score:4.31, w1:"중복 입력",      s1:3.25, w2:"처리/응답속도",  s2:3.50, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"ITSM",           scr:"분양관리 CSR 조회",          score:4.31, w1:"중복 입력",      s1:3.25, w2:"처리/응답속도",  s2:4.00, w3:"화면 가독성",    s3:4.00, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"ITSM",           scr:"BACKUP LIBRARY",             score:4.33, w1:"중복 입력",      s1:3.38, w2:"처리/응답속도",  s2:3.50, w3:"상태/진행 정보", s3:3.83, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"ITSM",           scr:"INSTANCE",                   score:4.33, w1:"중복 입력",      s1:3.50, w2:"입력 작업",      s2:4.00, w3:"처리/응답속도",  s3:4.00, i1:"반복 입력 항목 제거",                     i2:"필수/선택 입력 구분 명확화" },
+  { sys:"MyWork",         scr:"To-Do 해야 할 업무",         score:4.59, w1:"화면 가독성",    s1:3.67, w2:"중복 입력",      s2:4.00, w3:"입력 작업",      s3:4.50, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"반복 입력 항목 제거" },
+  { sys:"MyWork",         scr:"Task Manager 요청 Task",     score:4.71, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.17, w3:"작업 처리",      s3:4.67, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"MyWork",         scr:"Task Manager 요청 Task 상세",score:4.71, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.17, w3:"작업 처리",      s3:4.67, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"MyWork",         scr:"To-Do 상세조회",             score:4.72, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.17, w3:"상태/진행 정보", s3:4.67, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"NxGas",          scr:"법인카드등록",               score:3.98, w1:"오류 메시지",    s1:2.50, w2:"상태/진행 정보", s2:3.00, w3:"입력 작업",      s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"NxGas",          scr:"예금계좌등록",               score:4.00, w1:"상태/진행 정보", s1:2.33, w2:"오류 메시지",    s2:3.00, w3:"스크롤",        s3:3.33, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"NxGas",          scr:"통제성경비예산배정",         score:4.05, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.00, w3:"입력 작업",      s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"NxGas",          scr:"자산취득",                   score:4.34, w1:"중복 입력",      s1:3.50, w2:"오류 메시지",    s2:3.75, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"PMS",            scr:"용역계약 승인요청",          score:3.64, w1:"입력 작업",      s1:2.50, w2:"팝업/알림",      s2:3.00, w3:"화면 가독성",    s3:3.17, i1:"필수/선택 입력 구분 명확화",              i2:"불필요한 팝업 축소" },
+  { sys:"PMS",            scr:"전체공사발주계획 (신규)",    score:3.86, w1:"입력 작업",      s1:2.00, w2:"팝업/알림",      s2:3.00, w3:"중복 입력",      s3:3.25, i1:"필수/선택 입력 구분 명확화",              i2:"불필요한 팝업 축소" },
+  { sys:"PMS",            scr:"협력사 단가입력 (신규)",     score:3.90, w1:"입력 작업",      s1:2.50, w2:"중복 입력",      s2:3.00, w3:"팝업/알림",      s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"PMS",            scr:"선정대상업체 조회추천",      score:3.91, w1:"입력 작업",      s1:3.00, w2:"중복 입력",      s2:3.00, w3:"팝업/알림",      s3:3.00, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"PPIS",           scr:"Input Bill of Quantity",     score:4.34, w1:"입력 작업",      s1:1.75, w2:"중복 입력",      s2:3.50, w3:"오류 메시지",    s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"PPIS",           scr:"File Attachment",            score:4.34, w1:"오류 메시지",    s1:2.50, w2:"상태/진행 정보", s2:3.67, w3:"작업 처리",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"PPIS",           scr:"Input Bill of Material",     score:4.36, w1:"입력 작업",      s1:2.00, w2:"중복 입력",      s2:3.50, w3:"오류 메시지",    s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"PPIS",           scr:"Input Item (BQ)",            score:4.38, w1:"오류 메시지",    s1:3.50, w2:"중복 입력",      s2:4.00, w3:"처리/응답속도",  s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"PPS(Position Profile)", scr:"2.직무경험",          score:4.60, w1:"입력 작업",      s1:3.50, w2:"중복 입력",      s2:4.00, w3:"처리/응답속도",  s3:4.50, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"PPS(Position Profile)", scr:"4.직무경험통계",      score:4.72, w1:"중복 입력",      s1:4.00, w2:"스크롤",        s2:4.33, w3:"처리/응답속도",  s3:4.50, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"PPS(Position Profile)", scr:"3.전문직무분야",      score:4.74, w1:"입력 작업",      s1:4.00, w2:"중복 입력",      s2:4.00, w3:"처리/응답속도",  s3:4.50, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"PPS(Position Profile)", scr:"1.기본인적사항",      score:4.79, w1:"중복 입력",      s1:4.00, w2:"오류 메시지",    s2:4.50, w3:"화면 가독성",    s3:4.67, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"SAP",            scr:"계좌등록 (통합) 상신자",     score:4.62, w1:"중복 입력",      s1:3.12, w2:"스크롤",        s2:4.67, w3:"상태/진행 정보", s3:4.67, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"SAP",            scr:"계좌등록 (통합) 결제자",     score:4.62, w1:"중복 입력",      s1:3.12, w2:"스크롤",        s2:4.67, w3:"상태/진행 정보", s3:4.67, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"SAP",            scr:"협력업체계좌 자동등록 체크", score:4.62, w1:"중복 입력",      s1:3.12, w2:"스크롤",        s2:4.67, w3:"상태/진행 정보", s3:4.67, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"SAP",            scr:"구매카드가맹점등록조회",     score:4.62, w1:"중복 입력",      s1:3.12, w2:"스크롤",        s2:4.67, w3:"상태/진행 정보", s3:4.67, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"SSO",            scr:"본인확인",                   score:4.60, w1:"스크롤",        s1:3.67, w2:"중복 입력",      s2:4.00, w3:"처리/응답속도",  s3:4.25, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"TIMS기술지원",   scr:"설계기술지원 - 신규등록",   score:4.31, w1:"오류 메시지",    s1:3.00, w2:"스크롤",        s2:3.33, w3:"상태/진행 정보", s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"주요 액션 첫 화면 배치" },
+  { sys:"TIMS기술지원",   scr:"설계기술지원 - 담당자 지정", score:4.31, w1:"오류 메시지",   s1:3.00, w2:"스크롤",        s2:3.33, w3:"상태/진행 정보", s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"주요 액션 첫 화면 배치" },
+  { sys:"TIMS기술지원",   scr:"설계기술지원 - 중간산출물", score:4.31, w1:"오류 메시지",    s1:3.00, w2:"스크롤",        s2:3.33, w3:"상태/진행 정보", s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"주요 액션 첫 화면 배치" },
+  { sys:"TIMS기술지원",   scr:"설계기술지원 - 검토보고서", score:4.31, w1:"오류 메시지",    s1:3.00, w2:"스크롤",        s2:3.33, w3:"상태/진행 정보", s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"주요 액션 첫 화면 배치" },
+  { sys:"VOC",            scr:"VOC조회",                    score:4.17, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"스크롤",        s3:3.67, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"VOC",            scr:"VOC등록",                    score:4.17, w1:"입력 작업",      s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"스크롤",        s3:3.67, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"VOC",            scr:"민원처리",                   score:4.17, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"스크롤",        s3:3.67, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"VOC",            scr:"제보처리",                   score:4.17, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"스크롤",        s3:3.67, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"WORX",           scr:"최신글",                     score:4.09, w1:"중복 입력",      s1:3.12, w2:"스크롤",        s2:3.67, w3:"처리/응답속도",  s3:3.75, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"WORX",           scr:"자이톡 BM",                  score:4.12, w1:"처리/응답속도",  s1:3.50, w2:"중복 입력",      s2:3.62, w3:"오류 메시지",    s3:3.75, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"WORX",           scr:"진척 현황",                  score:4.14, w1:"오류 메시지",    s1:3.00, w2:"중복 입력",      s2:3.38, w3:"처리/응답속도",  s3:3.50, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"WORX",           scr:"휴가 취소 신청",             score:4.14, w1:"화면 가독성",    s1:3.50, w2:"스크롤",        s2:3.67, w3:"오류 메시지",    s3:3.75, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"주요 액션 첫 화면 배치" },
+  { sys:"XICRM",          scr:"현장 상담 등록",             score:3.52, w1:"오류 메시지",    s1:1.00, w2:"상태/진행 정보", s2:1.00, w3:"스크롤",        s3:2.33, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"XICRM",          scr:"현장 등록",                  score:3.53, w1:"오류 메시지",    s1:1.00, w2:"상태/진행 정보", s2:1.00, w3:"스크롤",        s3:2.33, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"XICRM",          scr:"거점홍보",                   score:3.53, w1:"오류 메시지",    s1:1.00, w2:"상태/진행 정보", s2:1.00, w3:"스크롤",        s3:2.33, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"XICRM",          scr:"예약 변경",                  score:3.53, w1:"오류 메시지",    s1:1.00, w2:"상태/진행 정보", s2:1.00, w3:"스크롤",        s3:2.33, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"경영관리",       scr:"일반부서 배정",              score:3.59, w1:"상태/진행 정보", s1:2.00, w2:"오류 메시지",    s2:2.50, w3:"화면 가독성",    s3:3.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"경영관리",       scr:"주관부서 배정",              score:3.62, w1:"상태/진행 정보", s1:2.00, w2:"오류 메시지",    s2:2.50, w3:"화면 가독성",    s3:3.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"경영관리",       scr:"통제성 수립배정",            score:3.66, w1:"상태/진행 정보", s1:2.33, w2:"오류 메시지",    s2:2.50, w3:"화면 가독성",    s3:3.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"경영관리",       scr:"프로젝트성 배정",            score:3.71, w1:"상태/진행 정보", s1:2.50, w2:"화면 가독성",    s2:3.00, w3:"팝업/알림",      s3:3.00, i1:"처리 단계 및 완료 여부 시각화",          i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"근무시간관리",   scr:"4.시차출퇴근신청",           score:4.66, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.00, w3:"화면 가독성",    s3:4.67, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"근무시간관리",   scr:"5.본인신청내역조회",         score:4.66, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.00, w3:"화면 가독성",    s3:4.50, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"근무시간관리",   scr:"2.근무시간관리(월)",         score:4.67, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.12, w3:"화면 가독성",    s3:4.67, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"근무시간관리",   scr:"3.Gate출입기록조회",         score:4.67, w1:"데이터 정확성",  s1:3.67, w2:"중복 입력",      s2:4.12, w3:"화면 가독성",    s3:4.67, i1:"입력·저장·출력 정합성 검증 강화",        i2:"반복 입력 항목 제거" },
+  { sys:"납기관리",       scr:"PL창호-메모 및 첨부",        score:3.93, w1:"중복 입력",      s1:1.88, w2:"상태/진행 정보", s2:3.33, w3:"화면 가독성",    s3:3.50, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"납기관리",       scr:"일반가구-부자재 발주현황",   score:3.95, w1:"중복 입력",      s1:1.88, w2:"스크롤",        s2:2.83, w3:"입력 작업",      s3:3.50, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"납기관리",       scr:"주방가구-부자재 발주현황",   score:3.95, w1:"중복 입력",      s1:1.88, w2:"스크롤",        s2:2.83, w3:"입력 작업",      s3:3.50, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"납기관리",       scr:"PL창호-창틀",                score:4.02, w1:"중복 입력",      s1:2.12, w2:"상태/진행 정보", s2:3.33, w3:"화면 가독성",    s3:3.50, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"녹색정보",       scr:"전력 사용량",                score:4.66, w1:"처리/응답속도",  s1:3.50, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"녹색정보",       scr:"유류 사용량",                score:4.69, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.00, w3:"상태/진행 정보", s3:4.00, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"녹색정보",       scr:"탈루내역",                   score:4.69, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.25, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"녹색정보",       scr:"용수 사용량",                score:4.69, w1:"처리/응답속도",  s1:3.75, w2:"중복 입력",      s2:4.00, w3:"오류 메시지",    s3:4.25, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"리더십진단",     scr:"12.공통역량진단기준관리",    score:4.54, w1:"입력 작업",      s1:3.25, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.17, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"리더십진단",     scr:"7.리더십역량진단코드관리",   score:4.55, w1:"입력 작업",      s1:3.75, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"리더십진단",     scr:"10.공통역량진단참여자선정",  score:4.59, w1:"입력 작업",      s1:3.75, w2:"중복 입력",      s2:3.88, w3:"상태/진행 정보", s3:4.17, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"리더십진단",     scr:"3.리더십진단결과",           score:4.60, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.00, w3:"스크롤",        s3:4.00, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"맨아워시스템",   scr:"6.MH결재선관리",             score:4.71, w1:"화면 가독성",    s1:4.17, w2:"중복 입력",      s2:4.25, w3:"상태/진행 정보", s3:4.33, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"반복 입력 항목 제거" },
+  { sys:"맨아워시스템",   scr:"1.공지사항리스트",           score:4.74, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.33, w3:"입력 작업",      s3:4.50, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"맨아워시스템",   scr:"3.출퇴근MH관리",             score:4.76, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.50, w3:"상태/진행 정보", s3:4.50, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"맨아워시스템",   scr:"4.Timesheet조회",            score:4.78, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.50, w3:"상태/진행 정보", s3:4.67, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"분양관리",       scr:"분양가변경",                 score:4.31, w1:"입력 작업",      s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"중복 입력",      s3:3.88, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"분양관리",       scr:"동호수편성",                 score:4.33, w1:"오류 메시지",    s1:3.00, w2:"상태/진행 정보", s2:3.83, w3:"중복 입력",      s3:4.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"분양관리",       scr:"별도품목정보(구)",           score:4.33, w1:"입력 작업",      s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"중복 입력",      s3:3.88, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"분양관리",       scr:"인지세관리",                 score:4.33, w1:"입력 작업",      s1:3.75, w2:"오류 메시지",    s2:3.75, w3:"작업 처리",      s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"성과관리시스템", scr:"3.목표수립(수정)",           score:4.48, w1:"입력 작업",      s1:3.50, w2:"오류 메시지",    s2:4.00, w3:"중복 입력",      s3:4.12, i1:"필수/선택 입력 구분 명확화",              i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"성과관리시스템", scr:"2.수시업무등록",             score:4.60, w1:"입력 작업",      s1:3.75, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.17, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"성과관리시스템", scr:"1.평가기준 작성",            score:4.64, w1:"입력 작업",      s1:3.75, w2:"중복 입력",      s2:4.00, w3:"상태/진행 정보", s3:4.33, i1:"필수/선택 입력 구분 명확화",              i2:"반복 입력 항목 제거" },
+  { sys:"성과관리시스템", scr:"4.업무합의 및 수시평가 입력",score:4.67, w1:"중복 입력",      s1:3.88, w2:"입력 작업",      s2:4.00, w3:"상태/진행 정보", s3:4.33, i1:"반복 입력 항목 제거",                     i2:"필수/선택 입력 구분 명확화" },
+  { sys:"영업관리",       scr:"영업활동 > 영업활동조회",   score:4.15, w1:"스크롤",        s1:3.33, w2:"상태/진행 정보", s2:3.56, w3:"중복 입력",      s3:3.83, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"영업관리",       scr:"국가조회",                   score:4.24, w1:"중복 입력",      s1:3.38, w2:"권한/접근",      s2:4.00, w3:"작업 처리",      s3:4.17, i1:"반복 입력 항목 제거",                     i2:"권한 기준 및 접근 통제 점검" },
+  { sys:"영업관리",       scr:"타사 프로젝트 등록",         score:4.29, w1:"중복 입력",      s1:3.62, w2:"권한/접근",      s2:4.00, w3:"화면 가독성",    s3:4.17, i1:"반복 입력 항목 제거",                     i2:"권한 기준 및 접근 통제 점검" },
+  { sys:"영업관리",       scr:"영업활동 상세보기",          score:4.30, w1:"중복 입력",      s1:3.67, w2:"스크롤",        s2:3.89, w3:"상태/진행 정보", s3:4.11, i1:"반복 입력 항목 제거",                     i2:"주요 액션 첫 화면 배치" },
+  { sys:"옵션공사관리",   scr:"총괄표",                     score:4.12, w1:"오류 메시지",    s1:2.50, w2:"입력 작업",      s2:3.00, w3:"데이터 정확성",  s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"필수/선택 입력 구분 명확화" },
+  { sys:"옵션공사관리",   scr:"옵션조회(전체)",             score:4.17, w1:"오류 메시지",    s1:3.00, w2:"화면 가독성",    s2:3.33, w3:"데이터 정확성",  s3:3.67, i1:"원인·조치 중심 메시지 표준화",           i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"옵션공사관리",   scr:"발주처옵션 등록 (세대별)",  score:4.21, w1:"팝업/알림",      s1:3.25, w2:"오류 메시지",    s2:3.25, w3:"데이터 정확성",  s3:3.67, i1:"불필요한 팝업 축소",                      i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"옵션공사관리",   scr:"사용자 등록",                score:4.31, w1:"데이터 정확성",  s1:3.67, w2:"화면 가독성",    s2:3.67, w3:"중복 입력",      s3:3.88, i1:"입력·저장·출력 정합성 검증 강화",        i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"옵션관리",       scr:"업체정보조회",               score:4.45, w1:"중복 입력",      s1:3.75, w2:"상태/진행 정보", s2:3.83, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"옵션관리",       scr:"별도품목정보(옵션몰)",       score:4.45, w1:"중복 입력",      s1:3.75, w2:"상태/진행 정보", s2:3.83, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"옵션관리",       scr:"입금처리",                   score:4.45, w1:"중복 입력",      s1:3.75, w2:"상태/진행 정보", s2:3.83, w3:"입력 작업",      s3:4.00, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"옵션관리",       scr:"공지사항",                   score:4.57, w1:"상태/진행 정보", s1:3.83, w2:"중복 입력",      s2:4.00, w3:"작업 처리",      s3:4.33, i1:"처리 단계 및 완료 여부 시각화",          i2:"반복 입력 항목 제거" },
+  { sys:"우리사주",       scr:"2.우리사주 인출",            score:4.67, w1:"스크롤",        s1:3.50, w2:"중복 입력",      s2:4.12, w3:"화면 가독성",    s3:4.67, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"우리사주",       scr:"4.우리사주 Q&A",             score:4.79, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.67, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"우리사주",       scr:"5.대출금 상환방법",          score:4.79, w1:"중복 입력",      s1:4.00, w2:"화면 가독성",    s2:4.50, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"우리사주",       scr:"3.증권계좌 등록 변경",       score:4.81, w1:"중복 입력",      s1:4.12, w2:"화면 가독성",    s2:4.67, w3:"스크롤",        s3:4.83, i1:"반복 입력 항목 제거",                     i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"전자전표",       scr:"출장비 정산 (3)",            score:4.31, w1:"입력 작업",      s1:2.75, w2:"화면 가독성",    s2:3.67, w3:"중복 입력",      s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"전자전표",       scr:"법인카드 사용경비 처리 (1)", score:4.48, w1:"입력 작업",      s1:3.00, w2:"화면 가독성",    s2:3.83, w3:"중복 입력",      s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"전자전표",       scr:"상계전표 (5)",               score:4.50, w1:"입력 작업",      s1:3.25, w2:"화면 가독성",    s2:3.83, w3:"중복 입력",      s3:4.00, i1:"필수/선택 입력 구분 명확화",              i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"전자전표",       scr:"경비전표 (4)",               score:4.52, w1:"입력 작업",      s1:3.25, w2:"화면 가독성",    s2:3.83, w3:"중복 입력",      s3:4.12, i1:"필수/선택 입력 구분 명확화",              i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"주택사업관리",   scr:"대여금집행",                 score:3.90, w1:"입력 작업",      s1:2.25, w2:"화면 가독성",    s2:3.17, w3:"작업 처리",      s3:3.50, i1:"필수/선택 입력 구분 명확화",              i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"주택사업관리",   scr:"당사자금집행",               score:4.05, w1:"입력 작업",      s1:2.50, w2:"작업 처리",      s2:3.50, w3:"상태/진행 정보", s3:3.67, i1:"필수/선택 입력 구분 명확화",              i2:"저장/승인/전송 완료 기준 명확화" },
+  { sys:"주택사업관리",   scr:"시행사자금집행",             score:4.09, w1:"입력 작업",      s1:2.50, w2:"작업 처리",      s2:3.50, w3:"상태/진행 정보", s3:3.67, i1:"필수/선택 입력 구분 명확화",              i2:"저장/승인/전송 완료 기준 명확화" },
+  { sys:"주택사업관리",   scr:"품의목록_수정",              score:4.10, w1:"입력 작업",      s1:3.00, w2:"팝업/알림",      s2:3.25, w3:"오류 메시지",    s3:3.75, i1:"필수/선택 입력 구분 명확화",              i2:"불필요한 팝업 축소" },
+  { sys:"주택사업비관리", scr:"계좌잔액조회",               score:4.66, w1:"오류 메시지",    s1:3.00, w2:"중복 입력",      s2:4.00, w3:"스크롤",        s3:4.50, i1:"원인·조치 중심 메시지 표준화",           i2:"반복 입력 항목 제거" },
+  { sys:"주택사업비관리", scr:"거래내역조회",               score:4.69, w1:"중복 입력",      s1:4.00, w2:"오류 메시지",    s2:4.00, w3:"화면 가독성",    s3:4.33, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"주택사업비관리", scr:"로그인 비밀번호 변경",       score:4.84, w1:"중복 입력",      s1:4.00, w2:"오류 메시지",    s2:4.75, w3:"데이터 정확성",  s3:5.00, i1:"반복 입력 항목 제거",                     i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"채용",           scr:"2.지원서관리",               score:4.53, w1:"스크롤",        s1:3.50, w2:"데이터 정확성",  s2:3.67, w3:"중복 입력",      s3:4.12, i1:"주요 액션 첫 화면 배치",                  i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"채용",           scr:"7. 채용상황종합표",          score:4.53, w1:"스크롤",        s1:3.50, w2:"데이터 정확성",  s2:3.67, w3:"중복 입력",      s3:4.12, i1:"주요 액션 첫 화면 배치",                  i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"채용",           scr:"12. 비밀번호 초기화",        score:4.53, w1:"스크롤",        s1:3.50, w2:"데이터 정확성",  s2:3.67, w3:"중복 입력",      s3:4.12, i1:"주요 액션 첫 화면 배치",                  i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"채용",           scr:"17. 면접결과 총괄표",        score:4.53, w1:"스크롤",        s1:3.50, w2:"데이터 정확성",  s2:3.67, w3:"중복 입력",      s3:4.12, i1:"주요 액션 첫 화면 배치",                  i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"철근가공장",     scr:"일일작업일보현황",           score:3.98, w1:"스크롤",        s1:3.00, w2:"데이터 정확성",  s2:3.67, w3:"중복 입력",      s3:3.75, i1:"주요 액션 첫 화면 배치",                  i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"철근가공장",     scr:"직송송장조회",               score:3.98, w1:"처리/응답속도",  s1:3.00, w2:"중복 입력",      s2:3.25, w3:"스크롤",        s3:3.33, i1:"3초 이상 응답 구간 튜닝",                  i2:"반복 입력 항목 제거" },
+  { sys:"철근가공장",     scr:"Tag생성",                    score:4.00, w1:"중복 입력",      s1:3.25, w2:"처리/응답속도",  s2:3.50, w3:"데이터 정확성",  s3:3.67, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"철근가공장",     scr:"세부Activity별Task정보",     score:4.00, w1:"스크롤",        s1:3.33, w2:"중복 입력",      s2:3.62, w3:"상태/진행 정보", s3:3.67, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"토건구매",       scr:"현장설명회자료작성",         score:4.00, w1:"스크롤",        s1:3.17, w2:"중복 입력",      s2:3.25, w3:"데이터 정확성",  s3:3.67, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"토건구매",       scr:"원재료마감Check",            score:4.03, w1:"스크롤",        s1:3.50, w2:"중복 입력",      s2:3.62, w3:"데이터 정확성",  s3:3.67, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"토건구매",       scr:"메시지설정",                 score:4.05, w1:"중복 입력",      s1:3.25, w2:"데이터 정확성",  s2:3.67, w3:"스크롤",        s3:3.83, i1:"반복 입력 항목 제거",                     i2:"입력·저장·출력 정합성 검증 강화" },
+  { sys:"토건구매",       scr:"원재료원가집계",             score:4.09, w1:"중복 입력",      s1:3.12, w2:"상태/진행 정보", s2:3.33, w3:"스크롤",        s3:3.83, i1:"반복 입력 항목 제거",                     i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"통합견적",       scr:"표준 WBS Update",            score:3.69, w1:"입력 작업",      s1:3.00, w2:"스크롤",        s2:3.00, w3:"화면 가독성",    s3:3.33, i1:"필수/선택 입력 구분 명확화",              i2:"주요 액션 첫 화면 배치" },
+  { sys:"통합견적",       scr:"주요 자재 및 시스템 선정",  score:3.71, w1:"입력 작업",      s1:3.00, w2:"스크롤",        s2:3.00, w3:"데이터 정확성",  s3:3.17, i1:"필수/선택 입력 구분 명확화",              i2:"주요 액션 첫 화면 배치" },
+  { sys:"통합견적",       scr:"공사개요 및 기본조건",       score:3.72, w1:"스크롤",        s1:2.83, w2:"화면 가독성",    s2:3.17, w3:"입력 작업",      s3:3.25, i1:"주요 액션 첫 화면 배치",                  i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"통합견적",       scr:"Project별 제안사 관리",      score:3.84, w1:"화면 가독성",    s1:3.17, w2:"입력 작업",      s2:3.25, w3:"데이터 정확성",  s3:3.33, i1:"정보 구조 재배치 · 주요 기능 우선순위화", i2:"필수/선택 입력 구분 명확화" },
+  { sys:"통합인물정보",   scr:"3.평가_리더십",             score:4.78, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.50, w3:"오류 메시지",    s3:4.50, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"통합인물정보",   scr:"1.인사발령",                 score:4.79, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.50, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"통합인물정보",   scr:"2.직무경험",                 score:4.79, w1:"중복 입력",      s1:4.00, w2:"처리/응답속도",  s2:4.50, w3:"오류 메시지",    s3:4.75, i1:"반복 입력 항목 제거",                     i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"퇴직자관리",     scr:"동호회개설",                 score:3.93, w1:"오류 메시지",    s1:1.50, w2:"상태/진행 정보", s2:2.67, w3:"권한/접근",      s3:3.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"퇴직자관리",     scr:"동호회원검색",               score:3.93, w1:"오류 메시지",    s1:1.50, w2:"상태/진행 정보", s2:2.67, w3:"권한/접근",      s3:3.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"퇴직자관리",     scr:"경조사등록",                 score:3.93, w1:"오류 메시지",    s1:1.50, w2:"상태/진행 정보", s2:2.67, w3:"권한/접근",      s3:3.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"퇴직자관리",     scr:"자유게시판등록",             score:3.93, w1:"오류 메시지",    s1:1.50, w2:"상태/진행 정보", s2:2.67, w3:"권한/접근",      s3:3.00, i1:"원인·조치 중심 메시지 표준화",           i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"플랜트구매",     scr:"Inquiry Status",             score:3.80, w1:"스크롤",        s1:3.00, w2:"상태/진행 정보", s2:3.44, w3:"입력 작업",      s3:3.67, i1:"주요 액션 첫 화면 배치",                  i2:"처리 단계 및 완료 여부 시각화" },
+  { sys:"플랜트구매",     scr:"Slip of Arriving Stock",     score:3.80, w1:"스크롤",        s1:2.89, w2:"중복 입력",      s2:3.42, w3:"화면 가독성",    s3:3.44, i1:"주요 액션 첫 화면 배치",                  i2:"반복 입력 항목 제거" },
+  { sys:"플랜트구매",     scr:"Req'n (Proposal/Manual)",    score:3.84, w1:"스크롤",        s1:3.00, w2:"화면 가독성",    s2:3.56, w3:"처리/응답속도",  s3:3.67, i1:"주요 액션 첫 화면 배치",                  i2:"정보 구조 재배치 · 주요 기능 우선순위화" },
+  { sys:"플랜트구매",     scr:"Product Management",         score:3.84, w1:"상태/진행 정보", s1:3.22, w2:"스크롤",        s2:3.44, w3:"화면 가독성",    s3:3.44, i1:"처리 단계 및 완료 여부 시각화",          i2:"주요 액션 첫 화면 배치" },
+  { sys:"헬프데스크",     scr:"담당자변경",                 score:3.93, w1:"처리/응답속도",  s1:3.00, w2:"오류 메시지",    s2:3.00, w3:"상태/진행 정보", s3:3.00, i1:"3초 이상 응답 구간 튜닝",                  i2:"원인·조치 중심 메시지 표준화" },
+  { sys:"헬프데스크",     scr:"시스템담당자",               score:4.14, w1:"권한/접근",      s1:3.00, w2:"처리/응답속도",  s2:3.00, w3:"오류 메시지",    s3:3.00, i1:"권한 기준 및 접근 통제 점검",             i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"헬프데스크",     scr:"문의하기",                   score:4.24, w1:"권한/접근",      s1:3.00, w2:"처리/응답속도",  s2:3.00, w3:"오류 메시지",    s3:3.00, i1:"권한 기준 및 접근 통제 점검",             i2:"3초 이상 응답 구간 튜닝" },
+  { sys:"헬프데스크",     scr:"상세보기",                   score:4.24, w1:"권한/접근",      s1:3.00, w2:"처리/응답속도",  s2:3.00, w3:"오류 메시지",    s3:3.00, i1:"권한 기준 및 접근 통제 점검",             i2:"3초 이상 응답 구간 튜닝" },
+];
+
+/* ═══════════════════════════════════════
+   시스템명 정규화 매핑 (RAW <-> UX_DATA 연결)
+   더블클릭 시스템명과 UX_DATA의 sys 필드를 매칭
+═══════════════════════════════════════ */
+const SYS_ALIAS = {
+  "HR시스템(통합인사시스템)": ["HR"],
+  "전자전표": ["전자전표"],
+  "BMS(BMR)": ["BMS"],
+  "CSMS": ["CSMS"],
+  "ITSM(CSR 처리)": ["ITSM"],
+  "Man Hour(MHS시스템)": ["맨아워시스템"],
+  "My Work": ["MyWork"],
+  "NextGAS": ["NxGas"],
+  "Position Profile": ["PPS(Position Profile)"],
+  "SMART EP 4.0": ["EP"],
+  "TIMS 기술지원": ["TIMS기술지원"],
+  "VOC 관리": ["VOC"],
+  "Xi CRM": ["XICRM"],
+  "G-Asset": ["G-Asset"],
+  "GMPS": ["GMPS"],
+  "gSurvey": ["gsurvey"],
+  "[문서] gWorks": ["GWORKS"],
+  "gWorks-V": ["GWORKS-V"],
+  "HelpDesk": ["헬프데스크"],
+  "[배관] GTP-AS Manager": ["GTP-AS MANAGER"],
+  "[배관] GTP-JC(GTPJC)": ["GTP-JC"],
+  "[배관] GTP-MaCON": ["GTP-MaCON"],
+  "[배관] GTP-MaDENG": ["GTP-MaDENG"],
+  "[철골] GTS-S": ["GTS-S"],
+  "G-Service": ["G-Service"],
+  "SAP": ["SAP"],
+  "성과관리(EMS)": ["성과관리시스템"],
+  "경영관리 PL:AN(NPS)": ["경영관리"],
+};
+
+/* 시스템명으로 UX 데이터 조회 */
+function getUXRows(sysName) {
+  const aliases = SYS_ALIAS[sysName] || [sysName];
+  const nameSet = new Set([sysName.toLowerCase(), ...aliases.map(a => a.toLowerCase())]);
+  return UX_DATA.filter(d => nameSet.has(d.sys.toLowerCase()));
+}
+
+/* 점수 색상 */
+function scoreColor(s) {
+  if (s >= 4.5) return "#16a34a";
+  if (s >= 4.0) return "#2563a8";
+  if (s >= 3.5) return "#ea6c0a";
+  return "#dc2626";
+}
+
+/* 팝업 열기 */
+function showUXPopup(sysName) {
+  const rows = getUXRows(sysName);
+
+  document.getElementById("uxModalTitle").textContent = `📊 ${sysName} — UX 진단 결과`;
+  document.getElementById("uxModalSub").textContent =
+    rows.length > 0
+      ? `진단 화면 ${rows.length}개 | 취약 항목 및 개선사항`
+      : "UX 진단 데이터가 없습니다.";
+
+  /* 요약 카드 */
+  const sg = document.getElementById("uxSummaryGrid");
+  if (rows.length > 0) {
+    const avgScore = (rows.reduce((s, r) => s + r.score, 0) / rows.length).toFixed(2);
+    const minScore = Math.min(...rows.map(r => r.score)).toFixed(2);
+    const maxScore = Math.max(...rows.map(r => r.score)).toFixed(2);
+
+    /* 가장 빈번한 취약항목 */
+    const wMap = {};
+    rows.forEach(r => {
+      [r.w1, r.w2, r.w3].forEach(w => { wMap[w] = (wMap[w]||0)+1; });
+    });
+    const topWeak = Object.entries(wMap).sort((a,b)=>b[1]-a[1])[0]?.[0] || "-";
+
+    sg.innerHTML = `
+      <div class="ux-sum-card"><div class="s-lbl">진단 화면 수</div><div class="s-val">${rows.length}</div><div class="s-sub">화면</div></div>
+      <div class="ux-sum-card"><div class="s-lbl">평균 종합점수</div><div class="s-val" style="color:${scoreColor(parseFloat(avgScore))}">${avgScore}</div><div class="s-sub">/ 5.00</div></div>
+      <div class="ux-sum-card"><div class="s-lbl">최저 / 최고</div><div class="s-val" style="font-size:16px;">${minScore} / ${maxScore}</div><div class="s-sub">점수 범위</div></div>
+      <div class="ux-sum-card"><div class="s-lbl">주요 취약항목</div><div class="s-val" style="font-size:15px;color:#ea6c0a;">${topWeak}</div><div class="s-sub">빈도 최다</div></div>
+    `;
+  } else {
+    sg.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#9ca3af;padding:20px;">진단 데이터가 없습니다.</div>`;
+  }
+
+  /* 테이블 */
+  const tb = document.getElementById("uxDiagBody");
+  if (rows.length > 0) {
+    tb.innerHTML = rows.map((r, i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td class="td-left-ux">${r.scr}</td>
+        <td>
+          <div class="score-bar-wrap">
+            <div class="score-bar"><div class="score-bar-fill" style="width:${(r.score/5)*100}%;background:${scoreColor(r.score)}"></div></div>
+            <div class="score-num" style="color:${scoreColor(r.score)}">${r.score.toFixed(2)}</div>
+          </div>
+        </td>
+        <td><span class="weak-chip">${r.w1}</span></td>
+        <td><span style="color:${scoreColor(r.s1)};font-weight:700;">${r.s1.toFixed(2)}</span></td>
+        <td><span class="weak-chip">${r.w2}</span></td>
+        <td><span style="color:${scoreColor(r.s2)};font-weight:700;">${r.s2.toFixed(2)}</span></td>
+        <td><span class="weak-chip">${r.w3}</span></td>
+        <td><span style="color:${scoreColor(r.s3)};font-weight:700;">${r.s3.toFixed(2)}</span></td>
+        <td class="td-left-ux"><span class="improve-chip">${r.i1}</span></td>
+        <td class="td-left-ux"><span class="improve-chip">${r.i2}</span></td>
+      </tr>`).join("");
+  } else {
+    tb.innerHTML = `<tr><td colspan="11" style="text-align:center;color:#9ca3af;padding:24px;">이 시스템의 UX 진단 상세 데이터가 없습니다.</td></tr>`;
+  }
+
+  document.getElementById("uxModalOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+/* 팝업 닫기 */
+function closeUXModal() {
+  document.getElementById("uxModalOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* 오버레이 클릭 시 닫기 */
+function closeUXModalOutside(e) {
+  if (e.target === document.getElementById("uxModalOverlay")) closeUXModal();
+}
+
+/* ESC 키로 닫기 */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeUXModal();
+});
 </script>
 </body>
 </html>
